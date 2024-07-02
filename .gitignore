@@ -1,0 +1,11 @@
+# Ignore build directory
+/build/
+
+# Ignore .cache directory
+/.cache/
+
+# Ignore .vscode directory
+/.vscode/
+
+# Ignore clang-format file
+.clang-format

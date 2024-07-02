@@ -1,0 +1,6 @@
+#ifndef HRS_ERROR_HANDLER_PRINTER_H
+#define HRS_ERROR_HANDLER_PRINTER_H
+
+
+
+#endif

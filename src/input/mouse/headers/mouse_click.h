@@ -1,0 +1,10 @@
+#ifndef HELERIS_INPUT_MOUSE_CLICK_H
+#define HELERIS_INPUT_MOUSE_CLICK_H
+
+enum EHRSMouseClickType {
+    HRS_RIGHT_CLICK,
+    HRS_LEFT_CLICK,
+    HRS_MIDDLE_CLICK,
+};
+
+#endif
