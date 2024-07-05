@@ -1,7 +1,8 @@
-#ifndef HELERIS_WINDOW
-#define HELERIS_WINDOW
+#ifndef HELERIS_WINDOW_H
+#define HELERIS_WINDOW_H
 
 #ifndef HELERIS_OPEN_GL_INCLUDE_ALREADY
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #define HELERIS_OPEN_GL_INCLUDE_ALREADY
 #endif
@@ -18,7 +19,7 @@ typedef struct HRSWindow {
     string_t name;                             // Window name
     HRSSize2 size;                              // Window size
     bool_t isFullScreen;                       // Indicates if the window is in fullscreen mode
-    void (*onWindowResize)(struct HRSWindow*, int, int); // Event for window resize
+    void (*onWindowResize)(struct HRSWindow*, HRSSize2); // Event for window resize
     void (*onWindowClicked)(struct HRSWindow*, HRSClickContext); // Event for window click
     void (*onWindowClose)(struct HRSWindow*);    // Event for window close
 } HRSWindow;
@@ -26,7 +27,22 @@ typedef struct HRSWindow {
 /*
  * Creates a new HRSWindow.
  */
-HRSWindow* hrswin_create(char *name, HRSSize2 size, bool_t activeFullScreen, void (*onWindowResize)(HRSWindow*, int, int), void (*onWindowClose)(HRSWindow*), void (*onWindowClicked)(HRSWindow*, HRSClickContext));
+HRSWindow* hrswin_create(string_t name, HRSSize2 size, bool_t activeFullScreen);
+
+/*
+ * Register a function for the "onWindowResize" event
+ */
+void hrswin_registerOnWindowResizeEvent(HRSWindow *window, void (*onWindowResize)(HRSWindow *window, HRSSize2 newSize));
+
+/*
+ * Register a function for the "onWindowClicked" event
+ */
+void hrswin_registerOnWindowClickedEvent(HRSWindow *window, void (*onWindowClicked)(HRSWindow *window, HRSClickContext clickContext));
+
+/*
+ * Register a function for the "onWindowClicked" event
+ */
+void hrswin_registerOnWindowCloseEvent(HRSWindow *window, void (*onWindowClose)(HRSWindow *window));
 
 /*
  * Changes the name of the specified window.

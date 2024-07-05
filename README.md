@@ -1,10 +1,10 @@
 # Heleris FW
 
-Heleris FW is a high-performance framework developed in C and designed to facilitate the creation of programs and games using OpenGL. With planned support for C++ and compatibility with other languages ​​through bridges such as CPython and Java, Heleris FW offers an efficient and powerful solution for developers seeking direct control over their graphics projects.
+Heleris FW is a framework developed in C and designed to facilitate the creation of programs and games using OpenGL.
 
 ## Main Features:
 - **Superior Performance**: Developed in C, Heleris FW provides exceptional speed ideal for intensive graphics applications.
-- **HTML-Based GUI System**: Facilitates the creation of graphical interfaces with intuitive organization using HTML-based elements.
+- **Panel-Based GUI System**: Facilitates the creation of graphical interfaces with intuitive organization using Panel-based structs.
 - **Advanced Resource Management**: Efficient loading of textures and audio using technologies such as `stb_image.h`.
 - **Input Abstraction**: Flexible support for user input, adaptable to different platforms such as Linux.
 - **Custom Types**: Includes custom data types for better readability and practical use.
