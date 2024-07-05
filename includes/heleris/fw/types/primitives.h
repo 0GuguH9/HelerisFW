@@ -9,4 +9,6 @@
 
 typedef uint8_t byte_t;
 
+#define BYTE_T_MAX 0xFF
+
 #endif

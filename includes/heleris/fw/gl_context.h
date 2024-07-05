@@ -29,6 +29,7 @@ typedef struct HRSGLContext {
     int minorVersion;                    // Minor version of OpenGL
     int swapCooldown;                    // Cooldown between update and Draw (calls only) 
     bool_t useVSync;                     // Use V-Sync?
+    float estimatedFPS;                  // Estimated frames per second based on last deltaTime
     float fps;                           // Frames per second
     HRSWindow *currentWindow;            // Pointer to the current window
     void (*onUpdate)(double deltaTime);  // Update callback
@@ -89,7 +90,7 @@ void hrsglc_swapBuffers(HRSGLContext *context);
 /*
  * Assert the context is alreadt initialized. Can stop the program flow.
  */
-void hrsglc_assertIsAlredyInitialized(HRSGLContext *context);
+void hrsglc_assertIsAlreadyInitialized(HRSGLContext *context);
 
 /*
  * Terminates and frees the OpenGL context.
