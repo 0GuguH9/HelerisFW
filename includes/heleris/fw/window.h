@@ -7,10 +7,10 @@
 #define HELERIS_OPEN_GL_INCLUDE_ALREADY
 #endif
 
-#include "../types.h"
-#include "../elements/headers/click_context.h"
-#include "../elements/headers/color.h"
-#include "../elements/headers/size2.h"
+#include "types.h"
+#include "elements/click_context.h"
+#include "elements/color.h"
+#include "elements/size2.h"
 
 // Structure representing a HRS window
 typedef struct HRSWindow {
@@ -35,7 +35,8 @@ HRSWindow* hrswin_create(string_t name, HRSSize2 size, bool_t activeFullScreen);
 void hrswin_registerOnWindowResizeEvent(HRSWindow *window, void (*onWindowResize)(HRSWindow *window, HRSSize2 newSize));
 
 /*
- * Register a function for the "onWindowClicked" event
+ * Register a function for the "onWindowClicked" event.
+ * Will work in a future version of the Framework
  */
 void hrswin_registerOnWindowClickedEvent(HRSWindow *window, void (*onWindowClicked)(HRSWindow *window, HRSClickContext clickContext));
 
@@ -65,6 +66,11 @@ void hrswin_changeBackgroundColor(HRSWindow *window, HRSColor backgroundColor);
  * especially if you forget to use this function.
  */
 void hrswin_applyChanges(HRSWindow *window);
+
+/*
+ * Just for checking if window is null. Can stop program flow
+ */
+void hrswin_assertWindowInstNull(HRSWindow *window);
 
 /*
  * Frees the specified window and its resources.

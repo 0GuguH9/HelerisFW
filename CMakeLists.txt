@@ -4,13 +4,13 @@ project(Heleris)
 
 set(CMAKE_C_STANDARD 11)
 
-file(GLOB SRC_FILES ${PROJECT_SOURCE_DIR}/src/*.c)
+file(GLOB SRC_FILES ${PROJECT_SOURCE_DIR}/src/heleris/fw/*.c)
 
 add_library(${PROJECT_NAME} SHARED ${SRC_FILES})
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC
-    ${PROJECT_SOURCE_DIR}/lib
+    ${PROJECT_SOURCE_DIR}/includes
 )
 
 find_package(OpenGL REQUIRED)

@@ -10,8 +10,10 @@
 #ifdef __cplusplus
 #include <string>
 typedef std::string string_t;
+#define STR_IS_EMPTY(string) (string.empty())
 #else
 typedef char * string_t;
+#define STR_IS_EMPTY(string) (string == nullptr || string[0] == '\0')
 #endif
 
 typedef struct HRSString {
