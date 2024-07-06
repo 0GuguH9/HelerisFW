@@ -1,6 +1,6 @@
 #include "heleris/fw/elements/color.h"
 
-#include "heleris/fw/error/error_presets.h"
+#include "heleris/fw/errors/error_presets.h"
 
 #include <string.h>
 
@@ -14,7 +14,7 @@ HRSColor hrsclr_fromFloat(float r, float g, float b, float a) {
     return color;
 }
 
-float hrsclr_toFloat(HRSColor color, enum HRSColorValue colorValue) {
+float hrsclr_toFloat(HRSColor color, enum EHRSColorValue colorValue) {
 
     switch (colorValue) {
         case HRS_COLOR_RGBA_R:

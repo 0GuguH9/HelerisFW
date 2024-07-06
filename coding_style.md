@@ -25,7 +25,7 @@ typedef struct HRSString {
 
 ### Structures
 
-Structure names (struct, union and enum) use HRSPascalCase, and the name is after *struct* keyword and after last *}* , with the exception of the enum which uses EHRSPascalCase.
+Struct and enum use HRSPascalCase. In all, the name after the last *}* in the typedef case uses HRSPascalCase (without the prefix). Unions and Structs must have typedef, and enums must avoid typedef. Exemples:
 
 ```c
 typedef struct HRSColor {
@@ -35,9 +35,6 @@ typedef struct HRSColor {
     uint8_t a; // The alpha of color. 0 is transparent and 255 is opaque
 } HRSColor;
 ```
-
-Note:
-- Structures (with enum exception) that have an associated name must always be one with typedef. The associated name with enuns is just for better identification for what it is.
 
 ### Variables identifiers
 

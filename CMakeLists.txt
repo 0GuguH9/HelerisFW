@@ -10,7 +10,7 @@ add_library(${PROJECT_NAME} SHARED ${SRC_FILES})
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC
-    ${PROJECT_SOURCE_DIR}/includes
+    ${PROJECT_SOURCE_DIR}/include
 )
 
 find_package(OpenGL REQUIRED)

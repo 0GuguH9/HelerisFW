@@ -1,7 +1,5 @@
 #include "heleris/fw/window.h"
 
-#include "heleris/fw/errors/error.h"
-#include "heleris/fw/errors/error_codes.h"
 #include "heleris/fw/errors/error_presets.h"
 #include "heleris/fw/types.h"
 
@@ -14,14 +12,6 @@ HRSWindow* hrswin_create(string_t name, HRSSize2 size, bool_t activeFullScreen){
     
     if (helerisWindow == NULL) 
         errpre_malloc("HRSWindow");
-
-    helerisWindow->glfwWindow = glfwCreateWindow(size.width, size.height, name, activeFullScreen == TRUE ? NULL: NULL, NULL);
-
-    if (helerisWindow->glfwWindow == NULL) {
-
-        HRSError error = {"can't make a GLFWwindow", "It was not possible to create a window of type GLFWwindow. Check if a context was previously created and initialized", HRS_ERROR_GLFW_CANT_MAKE_WINDOW};
-        hrserr_printAndStopProgram(&error);
-    }
     
     helerisWindow->name = name;
     helerisWindow->size = size;
@@ -86,6 +76,7 @@ void hrswin_changeWindowSize(HRSWindow *window, HRSSize2 newSize) {
         newSize.height = 1;
 
     glfwSetWindowSize(window->glfwWindow, newSize.width, newSize.height);
+    glViewport(0, 0, window->size.width, window->size.height);
 }
 
 void hrswin_changeBackgroundColor(HRSWindow *window, HRSColor backgroundColor) {
@@ -113,6 +104,7 @@ void hrswin_applyChanges(HRSWindow *window) {
 
     glfwSetWindowTitle(window->glfwWindow, window->name);
     glfwSetWindowSize(window->glfwWindow, window->size.width, window->size.height);
+    glViewport(0, 0, window->size.width, window->size.height);
 }
 
 void hrswin_assertWindowInstNull(HRSWindow *window) {
@@ -123,3 +115,15 @@ void hrswin_assertWindowInstNull(HRSWindow *window) {
     if (window->glfwWindow == nullptr) 
         errpre_nullptr("GLFWwindow");
 }
+
+void hrswin_free(HRSWindow *window) {
+
+    hrswin_assertWindowInstNull(window);
+
+    glfwDestroyWindow(window->glfwWindow);
+
+    free(window);
+
+    window = nullptr;
+}
+

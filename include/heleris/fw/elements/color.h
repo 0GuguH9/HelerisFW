@@ -3,7 +3,7 @@
 
 #include "../types.h"
 
-enum HRSColorValue {
+enum EHRSColorValue {
     HRS_COLOR_RGBA_R,
     HRS_COLOR_RGBA_G,
     HRS_COLOR_RGBA_B,
@@ -19,7 +19,7 @@ typedef struct HRSColor {
 
 HRSColor hrsclr_fromFloat(float r, float g, float b, float a);
 
-float hrsclr_toFloat(HRSColor color, enum HRSColorValue colorValue);
+float hrsclr_toFloat(HRSColor color, enum EHRSColorValue colorValue);
 
 /*
  * Not implemented
