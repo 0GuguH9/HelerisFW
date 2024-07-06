@@ -14,12 +14,12 @@ typedef bool bool_t;
 
 #else
 
-typedef enum EHRSBool {
+enum EHRSBool {
     FALSE = 0,
     TRUE = 1,
-} EBool;
+};
 
-typedef EBool bool_t;
+typedef enum EHRSBool bool_t;
 
 #endif
 

@@ -18,6 +18,7 @@ void hrsglc_glfwResizeCallback(GLFWwindow *window, int width, int height) {
 
         HRSSize2 newSize = { width, height };
         hrsWindow->onWindowResize(hrsWindow, newSize);
+        glViewport(0, 0, hrsWindow->size.width, hrsWindow->size.height);
     }
 }
 
@@ -37,14 +38,14 @@ HRSGLContext* hrsglc_create(enum EHRSMajorVersion majorVersion, int minorVersion
     context->useVSync = FALSE;
     context->swapCooldown = 0; // No cooldown
     context->fps = 0;
-    context->currentWindow = nullptr;
+    context->window = nullptr;
     context->onDraw = nullptr;
     context->onUpdate = nullptr;
 
     return context;
 }
 
-void hrsglc_init(HRSGLContext *context) {
+void hrsglc_init(HRSGLContext *context, HRSWindow *window) {
 
     if (context == nullptr)
         errpre_nullptr("HRSGLContext");
@@ -67,6 +68,25 @@ void hrsglc_init(HRSGLContext *context) {
 
     glfwWindowHint(GLFW_OPENGL_PROFILE, context->profileType);
 
+    if (window == nullptr)
+        errpre_nullptr("HRSWindow");
+
+    context->window = window;
+
+    // Rust ownership concept :D
+    context->window->glfwWindow = glfwCreateWindow(context->window->size.width, context->window->size.height, context->window->name, NULL, NULL);
+
+    if (context->window->glfwWindow == NULL) {
+
+        HRSError error = {"can't make a GLFWwindow", "probally you pc don't have the enough memory to alloc a glfwWindow", HRS_ERROR_GLFW_CANT_MAKE_WINDOW};
+        hrserr_printAndStopProgram(&error);
+    }
+
+    glfwMakeContextCurrent(context->window->glfwWindow); 
+
+    glfwSetWindowUserPointer(context->window->glfwWindow, context->window);
+    glfwSetFramebufferSizeCallback(window->glfwWindow, hrsglc_glfwResizeCallback);
+
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 
         HRSError error = {"GLAD can't init", "GLAD can't get the correct address of OpenGL functions", HRS_ERROR_GLAD_CANT_FINT_IMPLEMENTATIONS};
@@ -74,21 +94,6 @@ void hrsglc_init(HRSGLContext *context) {
     }
 
     context->hasBeenInitialized = TRUE;
-}
-
-void hrsglc_useWindow(HRSGLContext *context, HRSWindow *window) {
-
-    hrsglc_assertIsAlreadyInitialized(context);
-
-    hrswin_assertWindowInstNull(window);
-
-    context->currentWindow = window;
-
-    glfwMakeContextCurrent(context->currentWindow->glfwWindow); // Rust ownership concept :D
-
-    glfwSetWindowUserPointer(window->glfwWindow, window);
-
-    glfwSetFramebufferSizeCallback(window->glfwWindow, hrsglc_glfwResizeCallback);
 }
 
 void hrsglc_registerUpdateCallback(HRSGLContext *context, void (*onUpdate)(double deltaTime)) {
@@ -135,10 +140,10 @@ void hrsglc_startLoop(HRSGLContext *context) {
     double fpsTimer = 0.0;
     int frameCount = 0;
 
-    if (context->currentWindow == nullptr)
+    if (context->window == nullptr)
         errpre_nullptr("HRSWindow");
 
-    while(!glfwWindowShouldClose(context->currentWindow->glfwWindow)) {
+    while(!glfwWindowShouldClose(context->window->glfwWindow)) {
 
         if (context->swapCooldown > 0) {
 
@@ -165,10 +170,10 @@ void hrsglc_startLoop(HRSGLContext *context) {
 
         context->estimatedFPS = 1.0 / deltaTime;
 
-        glClearColor(hrsclr_toFloat(context->currentWindow->backgroundColor, HRS_COLOR_RGBA_R),
-            hrsclr_toFloat(context->currentWindow->backgroundColor, HRS_COLOR_RGBA_G),
-            hrsclr_toFloat(context->currentWindow->backgroundColor, HRS_COLOR_RGBA_B),
-            hrsclr_toFloat(context->currentWindow->backgroundColor, HRS_COLOR_RGBA_A));
+        glClearColor(hrsclr_toFloat(context->window->backgroundColor, HRS_COLOR_RGBA_R),
+            hrsclr_toFloat(context->window->backgroundColor, HRS_COLOR_RGBA_G),
+            hrsclr_toFloat(context->window->backgroundColor, HRS_COLOR_RGBA_B),
+            hrsclr_toFloat(context->window->backgroundColor, HRS_COLOR_RGBA_A));
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -188,19 +193,19 @@ void hrsglc_closeLoop(HRSGLContext *context) {
 
     hrsglc_assertIsAlreadyInitialized(context);
 
-    glfwSetWindowShouldClose(context->currentWindow->glfwWindow, GLFW_TRUE);
+    glfwSetWindowShouldClose(context->window->glfwWindow, GLFW_TRUE);
     
-    hrswin_assertWindowInstNull(context->currentWindow);
+    hrswin_assertWindowInstNull(context->window);
 
-    if (context->currentWindow->onWindowClose != nullptr)
-        context->currentWindow->onWindowClose(context->currentWindow);
+    if (context->window->onWindowClose != nullptr)
+        context->window->onWindowClose(context->window);
 }
 
 void hrsglc_swapBuffers(HRSGLContext *context) {
 
     hrsglc_assertIsAlreadyInitialized(context);
 
-    glfwSwapBuffers(context->currentWindow->glfwWindow);
+    glfwSwapBuffers(context->window->glfwWindow);
 }
 
 void hrsglc_assertIsAlreadyInitialized(HRSGLContext *context) {
@@ -219,10 +224,11 @@ void hrsglc_terminate(HRSGLContext *context) {
 
     hrsglc_assertIsAlreadyInitialized(context);
 
-    hrswin_free(context->currentWindow);
+    hrswin_free(context->window);
     free(context);
 
     glfwTerminate();
 
     context = nullptr;
 }
+

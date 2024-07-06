@@ -31,7 +31,7 @@ typedef struct HRSGLContext {
     bool_t useVSync;                     // Use V-Sync?
     float estimatedFPS;                  // Estimated frames per second based on last deltaTime
     float fps;                           // Frames per second
-    HRSWindow *currentWindow;            // Pointer to the current window
+    HRSWindow *window;            // Pointer to the current window
     void (*onUpdate)(double deltaTime);  // Update callback
     void (*onDraw)();                    // Draw callback
 } HRSGLContext;
@@ -42,14 +42,10 @@ typedef struct HRSGLContext {
 HRSGLContext* hrsglc_create(enum EHRSMajorVersion majorVersion, int minorVersion, enum EHRSProfileType profileType);
 
 /*
- * Initializes the OpenGL context.
+ * Initializes the OpenGL context using GLFW and GLAD.
+ * Ensures the correct setup and association with the given window.
  */
-void hrsglc_init(HRSGLContext *context);
-
-/*
- * Sets the active window for the OpenGL context.
- */
-void hrsglc_useWindow(HRSGLContext *context, HRSWindow *window);
+void hrsglc_init(HRSGLContext *context, HRSWindow *window);
 
 /*
  * Register the update callback
@@ -88,7 +84,7 @@ void hrsglc_closeLoop(HRSGLContext *context);
 void hrsglc_swapBuffers(HRSGLContext *context);
 
 /*
- * Assert the context is alreadt initialized. Can stop the program flow.
+ * Assert the context is already initialized. Can stop the program flow.
  */
 void hrsglc_assertIsAlreadyInitialized(HRSGLContext *context);
 
@@ -98,3 +94,4 @@ void hrsglc_assertIsAlreadyInitialized(HRSGLContext *context);
 void hrsglc_terminate(HRSGLContext *context);
 
 #endif
+
