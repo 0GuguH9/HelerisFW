@@ -5,6 +5,8 @@
 #include "heleris/fw/errors/error_presets.h"
 #include "heleris/fw/window.h"
 
+#include "heleris/fw/math/math.h"
+
 #include <GLFW/glfw3.h>
 #include <stdlib.h>
 
@@ -16,8 +18,21 @@ void hrsglc_glfwResizeCallback(GLFWwindow *window, int width, int height) {
 
     if (hrsWindow != nullptr && hrsWindow->onWindowResize != nullptr) {
 
-        HRSSize2 newSize = { width, height };
-        hrsWindow->onWindowResize(hrsWindow, newSize);
+        if (width == hrsWindow->minimalSize.width && height == hrsWindow->minimalSize.height) {
+
+            HRSSize newSize = { width, height };
+            hrsWindow->size = newSize;
+            return;
+        }
+
+        if (width < hrsWindow->minimalSize.width || height == hrsWindow->minimalSize.height) {
+
+            glfwSetWindowSize(window, HRS_MAX(width, hrsWindow->minimalSize.width), HRS_MAX(height, hrsWindow->minimalSize.height));
+            return;
+        }
+
+        HRSSize newSize = { width, height };
+        hrsWindow->size = hrsWindow->onWindowResize(hrsWindow, newSize);
         glViewport(0, 0, hrsWindow->size.width, hrsWindow->size.height);
     }
 }
