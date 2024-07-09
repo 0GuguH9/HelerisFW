@@ -8,6 +8,8 @@ typedef struct HRSVector2 {
     float y;
 } HRSVector2;
 
+HRSVector2 hrsvc2_create(float x, float y);
+
 float hrsvc2_magnitude(HRSVector2 vector);
 
 void hrsvc2_normalize(HRSVector2 vector);

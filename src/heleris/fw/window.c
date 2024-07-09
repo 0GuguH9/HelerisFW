@@ -6,7 +6,7 @@
 #include <GLFW/glfw3.h>
 #include <stdlib.h>
 
-HRSWindow* hrswin_create(string_t name, HRSSize2 size, bool_t activeFullScreen){
+HRSWindow* hrswin_create(string_t name, HRSSize size, bool_t activeFullScreen){
 
     HRSWindow *helerisWindow = (HRSWindow*)malloc(sizeof(HRSWindow));
     
@@ -23,7 +23,7 @@ HRSWindow* hrswin_create(string_t name, HRSSize2 size, bool_t activeFullScreen){
     return helerisWindow;
 }
 
-void hrswin_registerOnWindowResizeEvent(HRSWindow *window, void (*onWindowResize)(HRSWindow *window, HRSSize2 newSize)) {
+void hrswin_registerOnWindowResizeEvent(HRSWindow *window, HRSSize (*onWindowResize)(HRSWindow *window, HRSSize newSize)) {
 
     hrswin_assertWindowInstNull(window);
 
@@ -65,18 +65,17 @@ void hrswin_changeName(HRSWindow *window, string_t newName) {
     glfwSetWindowTitle(window->glfwWindow, newName);
 }
 
-void hrswin_changeWindowSize(HRSWindow *window, HRSSize2 newSize) {
+void hrswin_changeWindowSize(HRSWindow *window, HRSSize newSize) {
 
     hrswin_assertWindowInstNull(window);
 
-    if (newSize.width < 1)
-        newSize.width = 1;
+    if (newSize.width < window->minimalSize.width)
+        newSize.width = window->minimalSize.width;
 
-    if (newSize.height < 1)
-        newSize.height = 1;
+    if (newSize.height < window->minimalSize.width)
+        newSize.height = window->minimalSize.height;
 
     glfwSetWindowSize(window->glfwWindow, newSize.width, newSize.height);
-    glViewport(0, 0, window->size.width, window->size.height);
 }
 
 void hrswin_changeBackgroundColor(HRSWindow *window, HRSColor backgroundColor) {

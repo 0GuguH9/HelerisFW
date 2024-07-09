@@ -17,7 +17,7 @@
 // Elements files
 #include "elements/color.h"
 #include "elements/vector2.h"
-#include "elements/size2.h"
+#include "elements/size.h"
 #include "elements/rectangle.h"
 
 // Input files (not implemented)

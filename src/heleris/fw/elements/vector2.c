@@ -3,6 +3,12 @@
 #include <math.h>
 #include <string.h>
 
+HRSVector2 hrsvc2_create(float x, float y) {
+
+    HRSVector2 vector = {x, y};
+    return vector;
+}
+
 float hrsvc2_magnitude(HRSVector2 vector) {
     return sqrt(vector.x * vector.x + vector.y * vector.y);
 }

@@ -17,13 +17,16 @@ typedef struct HRSColor {
     byte_t a; // The alpha of color. 0 is transparent and 255 is opaque
 } HRSColor;
 
-HRSColor hrsclr_fromFloat(float r, float g, float b, float a);
+HRSColor hrsclr_fromRGB(byte_t r, byte_t g, byte_t b);
+
+HRSColor hrsclr_fromRGBA(byte_t r, byte_t g, byte_t b, byte_t a);
+
+HRSColor hrsclr_fromFRGB(float r, float g, float b);
+
+HRSColor hrsclr_fromFRGBA(float r, float g, float b, float a);
 
 float hrsclr_toFloat(HRSColor color, enum EHRSColorValue colorValue);
 
-/*
- * Not implemented
- */
 HRSColor hrsclr_fromHexa(string_t hexa);
 
 string_t hrsclr_toString(HRSColor color);

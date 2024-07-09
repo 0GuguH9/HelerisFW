@@ -125,9 +125,9 @@ HRSWindow* hrswin_create(/*...*/) {
 
 ### Function identifiers
 
-camelCase is used for function identifiers, and when we refer to these blocks of instructions in a more technical way, that is, for example, when we make a request, we call blocks of instructions with returns and arguments functions, subroutines for blocks of statements without returns, and, procedures for blocks of statements without returns and without arguments (the "*linked to a structure*" argument does not count). The general name is instruction block.
+camelCase is used for function identifiers.
 
-When the instruction block is "*linked*" to a structure, we use an abbreviation of it followed by an _ and the name, example:
+When the function is "*linked*" to a structure, we use an abbreviation of it followed by an _ and the name, example:
 
 ```c
 typedef struct SingleLinkedList {
@@ -149,15 +149,7 @@ HRSColor hrsclr_create(uint8_t r, uint8_t g, uint8_t b) {
 }
 ```
 
-Subroutine example:
-
-```c
-void sll_addItem(SingleLinkedList *list, void *data) {
-     //...
-}
-```
-
-(Linked) Procedure exemple:
+(Linked) Function exemple:
 
 ```c
 void sll_free(SingleLinkedList *list) {
@@ -165,12 +157,12 @@ void sll_free(SingleLinkedList *list) {
 }
 ```
 
-#### Instruction block suffixes
+#### Function suffixes
 
-Instruction block suffixes are to indicate additional behavior on that instruction block.
+Function suffixes are to indicate additional behavior on that function.
 
 - **_op**:
-     It means that this instruction block has optional arguments, and that calling this instruction block without this suffix will not need to specify these arguments. If there is more than one, we use a number to show the "index" of this function with optional arguments, such as "_op1", "_op2", etc. Example:
+     It means that this function has optional arguments, and that calling this function without this suffix will not need to specify these arguments. If there is more than one, we use a number to show the "index" of this function with optional arguments, such as "_op1", "_op2", etc. Example:
 
 ```c
 double v2_getRotation(Vector2D vector) {
@@ -182,7 +174,7 @@ double v2_getRotation_op(Vector2D vector, Vector2D center) {
 }
 ```
 - **_np**:
-     It means that this instruction block is **non pure**, that is, it uses variables shared globally or locally. Avoid non-pure functions. Example:
+     It means that this function is **non pure**, that is, it uses variables shared globally or locally. Avoid non-pure functions. Example:
 
 ```c
 FILE[] filesToCompile;
@@ -242,11 +234,11 @@ void main() {
 }
 ```
 
-We always prefer a smaller instruction block that does one function than a giant instruction block that does multiple functions
+We always prefer a smaller function that does one function than a giant function that does multiple functions
 
-### Instruction blocks
+### Functions
 
-If the instruction block has arguments, use the parentheses attached with the identifier of that instruction block; the parameters must also be enclosed in parentheses; After the ',' a space is used. Example:
+If the function has arguments, use the parentheses attached with the identifier of that function; the parameters must also be enclosed in parentheses; After the ',' a space is used. Example:
 
 ```c
 HRSVector2 hrsvc2_create(float x, float y) {
@@ -254,7 +246,7 @@ HRSVector2 hrsvc2_create(float x, float y) {
 }
 ```
 
-If-else inversion is used when there is a lot of if nested in an instruction block
+If-else inversion is used when there is a lot of if nested in an function
 
 ### If-else, loops and switch-case
 
@@ -366,9 +358,9 @@ The next includes (also separated by a blank line) are the standard C libs, alwa
 
 ### Definition of constants and structures
 
-Structures, macros for global or multi-instruction blocks use within the file (#define) and typedef must be declared in their header (.h) file, rather than in the source code (.c) directly.
+Structures, macros for global or multi-functions use within the file (#define) and typedef must be declared in their header (.h) file, rather than in the source code (.c) directly.
 
-Note that we prefer to use macros rather than generic instruction blocks that never change or that change one word or another, like variable types. Example:
+Note that we prefer to use macros rather than generic functions that never change or that change one word or another, like variable types. Example:
 
 ```c
 #define BYTE_1_VERIFY_UTF_8_SEQUENCE if ((charSequence[*index + 1] & utf_8SequenceByteVerifier) != utf_8SequenceByte) { \
@@ -396,4 +388,4 @@ macros
 declaration of structure blocks
 ```
 
-When a macro is used only within a instruction block, that macro must be located within that block, or above, and not in the header.
+When a macro is used only within a function, that macro must be located within that block, or above, and not in the header.
