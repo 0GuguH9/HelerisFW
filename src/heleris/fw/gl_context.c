@@ -46,6 +46,9 @@ HRSGLContext* hrsglc_create(enum EHRSMajorVersion majorVersion, int minorVersion
     if (context == nullptr) 
         errpre_malloc("HRSGLContext");
 
+    if (majorVersion == HRS_GL_MAJOR_TREE && minorVersion < 3)
+        errpre_invalidArgument("int minorVersion (minimum version with HRS_GL_MAJOR_TREE is 3)");
+
     context->majorVersion = majorVersion;
     context->minorVersion = minorVersion;
     context->profileType = profileType;

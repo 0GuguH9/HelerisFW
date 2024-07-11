@@ -11,4 +11,6 @@ typedef uint8_t byte_t;
 
 #define BYTE_T_MAX 0xFF
 
+typedef uint32_t glObject_t;
+
 #endif
