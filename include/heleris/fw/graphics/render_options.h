@@ -1,0 +1,10 @@
+#ifndef HRS_GRAPHICS_RENDER_OPTIONS_H
+#define HRS_GRAPHICS_RENDER_OPTIONS_H
+
+enum HRSFilter {
+    HRS_NEAREST,
+    HRS_LINER,
+    HRS_CUBIC,
+};
+
+#endif

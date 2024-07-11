@@ -1,0 +1,11 @@
+{
+    "editor.formatOnSave": true,
+    "[c]": {
+        "editor.defaultFormatter": "xaver.clang-format"
+    },
+    "[cpp]": {
+        "editor.defaultFormatter": "xaver.clang-format"
+    },
+    "clang-format.executable": "${workspaceRoot}/.clang-format",
+    "clang-format.style:File": "{BasedOnStyle: LLVM, IndentWidth: 4, TabWidth: 4, UseTab: Never, ColumnLimit: 80, AccessModifierOffset: -4, PointerAlignment: Left, ContinuationIndentWidth: 4, SpaceBeforeFunctionParentheses: false, DerivePointerAlignment: false, IndentCaseLabels: true, AllowShortIfStatementsOnASingleLine: false}"
+}
