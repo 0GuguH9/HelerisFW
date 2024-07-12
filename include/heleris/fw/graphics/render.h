@@ -3,7 +3,6 @@
 
 #include "render_options.h"
 #include "shader_program.h"
-#include "../types.h"
 
 typedef struct HRSRender {
     HRSShaderProgram shaderProgram;
