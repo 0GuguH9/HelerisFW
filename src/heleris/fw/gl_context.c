@@ -114,22 +114,32 @@ void hrsglc_init(HRSGLContext *context, HRSWindow *window) {
     context->hasBeenInitialized = TRUE;
 }
 
-void hrsglc_registerUpdateCallback(HRSGLContext *context, void (*onUpdate)(double deltaTime)) {
+void hrsglc_registerUpdateCallback(HRSGLContext *context, void (*onUpdate)(HRSGLContext *context, double deltaTime)) {
 
     hrsglc_assertIsAlreadyInitialized(context);
 
     if (onUpdate == nullptr)
-        errpre_nullptr("void (*onUpdate)(double deltaTime)");
+        errpre_nullptr("void (*onUpdate)(HRSGLContext *context, double deltaTime)");
 
     context->onUpdate = onUpdate;
 }
 
-void hrsglc_registerDrawCallback(HRSGLContext *context, void (*onDraw)()) {
+void hrsglc_registerFixedUpdateCallback(HRSGLContext *context, void (*onFixedUpdate)(HRSGLContext *context, double fixedDeltaTime)) {
+
+    hrsglc_assertIsAlreadyInitialized(context);
+
+    if (onFixedUpdate == nullptr)
+        errpre_nullptr("void (*onFixedUpdate)(HRSGLContext *context, double deltaTime)");
+
+    context->onFixedUpdate = onFixedUpdate;
+}
+
+void hrsglc_registerDrawCallback(HRSGLContext *context, void (*onDraw)(HRSGLContext *context)) {
 
     hrsglc_assertIsAlreadyInitialized(context);
 
     if (onDraw == nullptr)
-        errpre_nullptr("void (*onDraw)()");
+        errpre_nullptr("void (*onDraw)(HRSGLContext *context)");
 
     context->onDraw = onDraw;
 }
@@ -153,8 +163,10 @@ void hrsglc_startLoop(HRSGLContext *context) {
     hrsglc_assertIsAlreadyInitialized(context);
 
     double previousTime = glfwGetTime();
+    double previousFixedTime = glfwGetTime();
     double currentTime;
     double deltaTime;
+    double fixedDeltaTime;
     double fpsTimer = 0.0;
     int frameCount = 0;
 
@@ -162,15 +174,6 @@ void hrsglc_startLoop(HRSGLContext *context) {
         errpre_nullptr("HRSWindow");
 
     while(!glfwWindowShouldClose(context->window->glfwWindow)) {
-
-        if (context->swapCooldown > 0) {
-
-            double currentSwapTime = glfwGetTime();
-            double swapDeltaTime = currentSwapTime - previousTime;
-
-            if (context->swapCooldown / 1000.0 > swapDeltaTime)
-                continue;
-        }
 
         currentTime = glfwGetTime();
         deltaTime = currentTime - previousTime;
@@ -188,18 +191,25 @@ void hrsglc_startLoop(HRSGLContext *context) {
 
         context->estimatedFPS = 1.0 / deltaTime;
 
+        if (context->onUpdate != nullptr)
+            context->onUpdate(context, deltaTime);
+
+        fixedDeltaTime = currentTime - previousFixedTime;
+
+        if (context->swapCooldown / 1000.0 <= fixedDeltaTime && context->onFixedUpdate != nullptr) {
+            
+            context->onFixedUpdate(context, fixedDeltaTime);
+            previousFixedTime = currentTime;
+        }
         glClearColor(hrsclr_toFloat(context->window->backgroundColor, HRS_COLOR_RGBA_R),
             hrsclr_toFloat(context->window->backgroundColor, HRS_COLOR_RGBA_G),
             hrsclr_toFloat(context->window->backgroundColor, HRS_COLOR_RGBA_B),
             hrsclr_toFloat(context->window->backgroundColor, HRS_COLOR_RGBA_A));
 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        if (context->onUpdate != nullptr)
-            context->onUpdate(deltaTime);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         if (context->onDraw != nullptr)
-            context->onDraw();
+            context->onDraw(context);
 
         hrsglc_swapBuffers(context);
 
@@ -249,4 +259,3 @@ void hrsglc_terminate(HRSGLContext *context) {
 
     context = nullptr;
 }
-

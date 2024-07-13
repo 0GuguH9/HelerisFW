@@ -9,51 +9,58 @@ HRSVector2 hrsvc2_create(float x, float y) {
     return vector;
 }
 
-float hrsvc2_magnitude(HRSVector2 vector) {
+float hrsvc2_length(HRSVector2 vector) {
     return sqrt(vector.x * vector.x + vector.y * vector.y);
 }
 
 void hrsvc2_normalize(HRSVector2 vector) {
 
-    float magnitude = hrsvc2_magnitude(vector);
+    float length = hrsvc2_length(vector);
 
-    if (magnitude != 0) {
-        vector.x /= magnitude;
-        vector.y /= magnitude;
+    if (length != 0) {
+        vector.x /= length;
+        vector.y /= length;
     }
 }
 
-HRSVector2 hrsvc2_add(HRSVector2 vector1, HRSVector2 vector2) {
+HRSVector2 hrsvc2_add(HRSVector2 addend, HRSVector2 augend) {
 
-    HRSVector2 result = { vector1.x + vector2.x, vector1.y + vector2.y };
-
-    return result;
-}
-
-HRSVector2 hrsvc2_subtract(HRSVector2 vector1, HRSVector2 vector2) {
-
-    HRSVector2 result = { vector1.x - vector2.x, vector1.y - vector2.y };
+    HRSVector2 result = { addend.x + augend.x, addend.y + augend.y };
 
     return result;
 }
 
-HRSVector2 hrsvc2_multiply(HRSVector2 vector1, HRSVector2 vector2) {
+HRSVector2 hrsvc2_subtract(HRSVector2 minuend, HRSVector2 subtrahend) {
 
-    HRSVector2 result = { vector1.x * vector2.x, vector1.y * vector2.y };
-
-    return result;
-}
-
-HRSVector2 hrsvc2_divide(HRSVector2 vector1, HRSVector2 vector2) {
-
-    HRSVector2 result = { vector1.x / vector2.x, vector1.y / vector2.y };
+    HRSVector2 result = { minuend.x - subtrahend.x, minuend.y - subtrahend.y };
 
     return result;
 }
 
-HRSVector2 hrsvc2_multiplyByScalar(HRSVector2 vector, float scalar) {
+HRSVector2 hrsvc2_fdivide(HRSVector2 dividend, float divisor) {
+
+    HRSVector2 result = { dividend.x / divisor, dividend.y / divisor };
+
+    return result;
+}
+
+HRSVector2 hrsvc2_divide(HRSVector2 dividend, HRSVector2 divisor) {
+
+    HRSVector2 result = { dividend.x / divisor.x, dividend.y / divisor.y };
+
+    return result;
+}
+
+HRSVector2 hrsvc2_scale(HRSVector2 vector, float scalar) {
 
     HRSVector2 result = { vector.x * scalar, vector.y * scalar };
+
+    return result;
+}
+
+HRSVector2 hrsvc2_multiply(HRSVector2 multiplicand, HRSVector2 multiplier) {
+
+    HRSVector2 result = { multiplicand.x * multiplier.x, multiplicand.y * multiplier.y };
 
     return result;
 }
