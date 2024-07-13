@@ -26,7 +26,7 @@ typedef struct HRSWindow {
 } HRSWindow;
 
 /*
- * Creates a new HRSWindow.
+ * Create an heap object (an pointer to heap memory) of HRSWindow.
  */
 HRSWindow* hrswin_create(string_t name, HRSSize size, bool_t activeFullScreen);
 
@@ -70,16 +70,9 @@ void hrswin_minimumWindowSize(HRSWindow *window, HRSSize newSize);
 void hrswin_changeBackgroundColor(HRSWindow *window, HRSColor backgroundColor);
 
 /*
- * Applies changes made directly to the HRSWindow values.
- * It is not recommended to change the values directly, as it may cause strange errors,
- * especially if you forget to use this function.
+ * Assert that the HRSWindow object is not nullptr and has been initialized
  */
-void hrswin_applyChanges(HRSWindow *window);
-
-/*
- * Just for checking if window is null. Can stop program flow.
- */
-void hrswin_assertWindowInstNull(HRSWindow *window);
+void hrswin_assert(HRSWindow *window);
 
 /*
  * Frees the specified window and its resources.
