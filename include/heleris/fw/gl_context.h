@@ -54,7 +54,7 @@ void hrsglc_init(HRSGLContext *context, HRSWindow *window);
 void hrsglc_registerUpdateCallback(HRSGLContext *context, void (*onUpdate)(HRSGLContext *context, double deltaTime));
 
 /*
- * This only work if double update is activated.
+ * Register the fixed update callback
  */
 void hrsglc_registerFixedUpdateCallback(HRSGLContext *context, void (*onFixed)(HRSGLContext *context, double fixedDeltaTime));
 
