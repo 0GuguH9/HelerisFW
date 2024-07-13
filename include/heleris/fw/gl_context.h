@@ -34,17 +34,18 @@ typedef struct HRSGLContext {
     HRSWindow *window;                                                          // Pointer to the current window
     void (*onUpdate)(struct HRSGLContext *context, double deltaTime);           // Update callback
     void (*onFixedUpdate)(struct HRSGLContext *context, double fixedDeltaTime); // Fixed Update callback
-    void (*onDraw)(struct HRSGLContext *context);                               // Draw callback
+    void (*draw)(struct HRSGLContext *context);                               // Draw callback
 } HRSGLContext;
 
 /*
- * Creates a new OpenGL context.
+ * Create an heap object (an pointer to heap memory) of HRSGLContext. 
+ * You can't create a HRSGLContext with another active.
  */
 HRSGLContext* hrsglc_create(enum EHRSMajorVersion majorVersion, int minorVersion, enum EHRSProfileType profileType);
 
 /*
- * Initializes the OpenGL context using GLFW and GLAD.
- * Ensures the correct setup and association with the given window.
+ * Init all OpenGL context for the application. 
+ * You can't have more than one HRSGLContext actived in the same time.
  */
 void hrsglc_init(HRSGLContext *context, HRSWindow *window);
 
@@ -61,7 +62,7 @@ void hrsglc_registerFixedUpdateCallback(HRSGLContext *context, void (*onFixed)(H
 /*
  * Register the draw callback
  */
-void hrsglc_registerDrawCallback(HRSGLContext *context, void (*onDraw)(HRSGLContext *context));
+void hrsglc_registerDrawCallback(HRSGLContext *context, void (*draw)(HRSGLContext *context));
 
 /*
  * Sets the update cycle cooldown (fixed update calls) for the OpenGL context in seconds. 
@@ -90,9 +91,9 @@ void hrsglc_closeLoop(HRSGLContext *context);
 void hrsglc_swapBuffers(HRSGLContext *context);
 
 /*
- * Assert the context is already initialized. Can stop the program flow.
+ * Assert that the HRSGLContext object is not nullptr and has been initialized.
  */
-void hrsglc_assertIsAlreadyInitialized(HRSGLContext *context);
+void hrsglc_assert(HRSGLContext *context);
 
 /*
  * Terminates and frees the OpenGL context.

@@ -5,7 +5,7 @@ Heleris FW is a C framework designed to help create programs or (mainly 2D) game
 ## Current Features
 
 - **Facilitates the creation of Window and GL Context**: Offers two structs, `HRSGLContext` and `HRSWindow`, to simplify the creation and management of GLFW windows and OpenGL contexts.
-- **Program loop facilitation**: Provides a loop that allows setting a maximum FPS (Frames Per Second), vertical synchronization (V-Sync), delta time (time difference between frames), and easy creation of backgrounds.
+- **Program loop facilitation**: Provides a loop that provides two updates, the onUpdate (called every frame) and the onFixedUpdate (called every cycle cooldown, the default is 60 per second), each with one delta time. Allows setting a maximum FPS (Frames Per Second), cycle cooldown (for onFixedUpdate), vertical synchronization (V-Sync), delta time (time difference between frames), and easy creation of backgrounds.
 
 ## Getting Started
 
@@ -40,7 +40,7 @@ int main() {
 
     hrsglc_init(context, window);
 
-    context->window->backgroundColor = hrsclr_fromHexa("8080FF");
+    hrswin_changeBackgroundColor(context->window, hrsclr_fromHexa("8080FF"));
 
     hrsglc_startLoop(context);
 

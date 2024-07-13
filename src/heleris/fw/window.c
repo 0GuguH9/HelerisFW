@@ -25,7 +25,7 @@ HRSWindow* hrswin_create(string_t name, HRSSize size, bool_t activeFullScreen){
 
 void hrswin_registerOnWindowResizeEvent(HRSWindow *window, HRSSize (*onWindowResize)(HRSWindow *window, HRSSize newSize)) {
 
-    hrswin_assertWindowInstNull(window);
+    hrswin_assert(window);
 
     if (onWindowResize == nullptr)
         errpre_nullptr("void (*onWindowResize)(HRSWindow *window, HRSSize2 newSize)");
@@ -35,7 +35,7 @@ void hrswin_registerOnWindowResizeEvent(HRSWindow *window, HRSSize (*onWindowRes
 
 void hrswin_registerOnWindowClickedEvent(HRSWindow *window, void (*onWindowClicked)(HRSWindow *window, HRSClickContext clickContext)) {
 
-    hrswin_assertWindowInstNull(window);
+    hrswin_assert(window);
 
     if (onWindowClicked == nullptr)
         errpre_nullptr("void (*onWindowClicked)(HRSWindow *window, HRSClickContext clickContext)");
@@ -45,7 +45,7 @@ void hrswin_registerOnWindowClickedEvent(HRSWindow *window, void (*onWindowClick
 
 void hrswin_registerOnWindowCloseEvent(HRSWindow *window, void (*onWindowClose)(HRSWindow *window)) {
     
-    hrswin_assertWindowInstNull(window);
+    hrswin_assert(window);
 
     if (onWindowClose == nullptr)
         errpre_nullptr("void (*onWindowClose)(HRSWindow *window)");
@@ -54,7 +54,7 @@ void hrswin_registerOnWindowCloseEvent(HRSWindow *window, void (*onWindowClose)(
 }
 void hrswin_changeName(HRSWindow *window, string_t newName) {
 
-    hrswin_assertWindowInstNull(window);
+    hrswin_assert(window);
 
     if (STR_IS_EMPTY(newName)) {
 
@@ -67,7 +67,7 @@ void hrswin_changeName(HRSWindow *window, string_t newName) {
 
 void hrswin_changeWindowSize(HRSWindow *window, HRSSize newSize) {
 
-    hrswin_assertWindowInstNull(window);
+    hrswin_assert(window);
 
     if (newSize.width < window->minimalSize.width)
         newSize.width = window->minimalSize.width;
@@ -80,14 +80,14 @@ void hrswin_changeWindowSize(HRSWindow *window, HRSSize newSize) {
 
 void hrswin_changeBackgroundColor(HRSWindow *window, HRSColor backgroundColor) {
 
-    hrswin_assertWindowInstNull(window);
+    hrswin_assert(window);
 
     window->backgroundColor = backgroundColor;
 }
 
 void hrswin_applyChanges(HRSWindow *window) {
 
-    hrswin_assertWindowInstNull(window);
+    hrswin_assert(window);
 
     if (STR_IS_EMPTY(window->name)) {
 
@@ -106,7 +106,7 @@ void hrswin_applyChanges(HRSWindow *window) {
     glViewport(0, 0, window->size.width, window->size.height);
 }
 
-void hrswin_assertWindowInstNull(HRSWindow *window) {
+void hrswin_assert(HRSWindow *window) {
 
     if (window == nullptr) 
         errpre_nullptr("HRSWindow");
@@ -117,7 +117,7 @@ void hrswin_assertWindowInstNull(HRSWindow *window) {
 
 void hrswin_free(HRSWindow *window) {
 
-    hrswin_assertWindowInstNull(window);
+    hrswin_assert(window);
 
     glfwDestroyWindow(window->glfwWindow);
 

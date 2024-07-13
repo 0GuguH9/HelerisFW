@@ -18,7 +18,7 @@ int main() {
      * RRGGBBAA
      * #RRGGBBAA
      */
-    context->window->backgroundColor = hrsclr_fromHexa("#8080FF");
+    hrswin_changeBackgroundColor(context->window, hrsclr_fromHexa("#8080FF"));
     
     // Start program loop
     hrsglc_startLoop(context);
