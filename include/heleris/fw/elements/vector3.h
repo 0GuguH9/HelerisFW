@@ -3,6 +3,7 @@
 
 #include "../types.h"
 
+// Represents a point in a 3D space
 typedef struct HRSVector3 {
     float x;
     float y;
@@ -21,6 +22,11 @@ float hrsvc3_length(HRSVector3 vector);
 
 /*
  * Normalize a vector, aka making with lenght 1
+ */
+void hrsvc3_normalize(HRSVector3 vector);
+
+/*
+ * Normalize a vector, aka making with lenght 1, in a fast way, but no too precise.
  */
 void hrsvc3_normalize(HRSVector3 vector);
 

@@ -1,6 +1,0 @@
-#ifndef HRS_GRAPHICS_PRESETS_BASIC_2D_H
-#define HRS_GRAPHICS_PRESETS_BASIC_2D_H
-
-
-
-#endif

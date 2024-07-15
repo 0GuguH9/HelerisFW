@@ -1,5 +1,7 @@
 #include "heleris/fw/elements/rectangle.h"
 
+#include <string.h>
+
 HRSRectangle hrsrec_create(HRSVector2 pos, HRSSize size) {
 
     HRSRectangle rectangle = {pos, size};
@@ -16,4 +18,12 @@ bool_t hrsrec_intersect(HRSRectangle rectangle1, HRSRectangle rectangle2) {
 
     return ((rectangle1.position.x + rectangle1.size.width) >= rectangle2.position.x || rectangle1.position.x <= (rectangle2.position.x + rectangle2.size.width))
         && ((rectangle1.position.y + rectangle1.size.height) >= rectangle2.position.y || rectangle1.position.y <= (rectangle2.position.y + rectangle2.size.height));
+}
+
+string_t hrsrec_toString(HRSRectangle rectangle) {
+
+    char buffer[125];
+    snprintf(buffer, sizeof(buffer), "{Pos: %s, Size: %s}", hrsvc2_toString(rectangle.position), hrssz_toString(rectangle.size));
+
+    return strdup(buffer);
 }

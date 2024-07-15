@@ -3,6 +3,7 @@
 #include "heleris/fw/errors/error.h"
 #include "heleris/fw/errors/error_codes.h"
 #include "heleris/fw/errors/error_presets.h"
+#include "heleris/fw/graphics/device_graphics.h"
 #include "heleris/fw/window.h"
 
 #include "heleris/fw/math/math.h"
@@ -102,13 +103,15 @@ void hrsglc_init(HRSGLContext *context, HRSWindow *window) {
     // Rust ownership concept :D
     context->window->glfwWindow = glfwCreateWindow(context->window->size.width, context->window->size.height, context->window->name, NULL, NULL);
 
-    if (context->window->glfwWindow == NULL) {
+    if (context->window->glfwWindow == nullptr) {
 
         HRSError error = {"can't make a GLFWwindow", "probally you pc don't have the enough memory to alloc a glfwWindow", HRS_ERROR_GLFW_CANT_MAKE_WINDOW};
         hrserr_printAndStopProgram(&error);
     }
 
     glfwMakeContextCurrent(context->window->glfwWindow); 
+
+    glfwSetWindowSizeLimits(context->window->glfwWindow, context->window->minimalSize.width, context->window->minimalSize.height, GLFW_DONT_CARE, GLFW_DONT_CARE);
 
     glfwSetWindowUserPointer(context->window->glfwWindow, context->window);
     glfwSetFramebufferSizeCallback(window->glfwWindow, hrsglc_glfwResizeCallback);
@@ -142,12 +145,12 @@ void hrsglc_registerFixedUpdateCallback(HRSGLContext *context, void (*onFixedUpd
     context->onFixedUpdate = onFixedUpdate;
 }
 
-void hrsglc_registerDrawCallback(HRSGLContext *context, void (*draw)(HRSGLContext *context)) {
+void hrsglc_registerDrawCallback(HRSGLContext *context, void (*draw)(HRSGLContext *context, HRSDeviceGraphics deviceGraphics)) {
 
     hrsglc_assert(context);
 
     if (draw == nullptr)
-        errpre_nullptr("void (*draw)(HRSGLContext *context)");
+        errpre_nullptr("void (*draw)(HRSGLContext *context, HRSDeviceGraphics deviceGraphics)");
 
     context->draw = draw;
 }
@@ -179,6 +182,8 @@ void hrsglc_startLoop(HRSGLContext *context) {
     double fixedDeltaTime;
     double fpsTimer = 0.0;
     int frameCount = 0;
+
+    HRSDeviceGraphics deviceGraphics = hrsdgr_create();
 
     while(!glfwWindowShouldClose(context->window->glfwWindow)) {
 
@@ -216,7 +221,7 @@ void hrsglc_startLoop(HRSGLContext *context) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         if (context->draw != nullptr)
-            context->draw(context);
+            context->draw(context, deviceGraphics);
 
         hrsglc_swapBuffers(context);
 

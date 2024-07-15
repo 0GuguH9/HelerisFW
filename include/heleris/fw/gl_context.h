@@ -1,13 +1,14 @@
 #ifndef HELERIS_GL_CONTEXT_H
 #define HELERIS_GL_CONTEXT_H
 
-#include "window.h"
-
 #ifndef HELERIS_OPEN_GL_INCLUDE_ALREADY
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #define HELERIS_OPEN_GL_INCLUDE_ALREADY
 #endif
+
+#include "heleris/fw/graphics/device_graphics.h"
+#include "window.h"
 
 // Enumeration of OpenGL major supported versions (Major.Minor)
 enum EHRSMajorVersion {
@@ -34,7 +35,7 @@ typedef struct HRSGLContext {
     HRSWindow *window;                                                          // Pointer to the current window
     void (*onUpdate)(struct HRSGLContext *context, double deltaTime);           // Update callback
     void (*onFixedUpdate)(struct HRSGLContext *context, double fixedDeltaTime); // Fixed Update callback
-    void (*draw)(struct HRSGLContext *context);                               // Draw callback
+    void (*draw)(struct HRSGLContext *context, HRSDeviceGraphics deviceGraphics);                               // Draw callback
 } HRSGLContext;
 
 /*
@@ -62,7 +63,7 @@ void hrsglc_registerFixedUpdateCallback(HRSGLContext *context, void (*onFixed)(H
 /*
  * Register the draw callback
  */
-void hrsglc_registerDrawCallback(HRSGLContext *context, void (*draw)(HRSGLContext *context));
+void hrsglc_registerDrawCallback(HRSGLContext *context, void (*draw)(HRSGLContext *context, HRSDeviceGraphics deviceGraphics));
 
 /*
  * Sets the update cycle cooldown (fixed update calls) for the OpenGL context in seconds. 
