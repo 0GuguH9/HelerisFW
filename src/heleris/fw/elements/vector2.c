@@ -76,7 +76,7 @@ float hrsvc2_distance(HRSVector2 vector1, HRSVector2 vector2) {
 string_t hrsvc2_toString(HRSVector2 vector) {
 
     char buffer[75];
-    snprintf(buffer, sizeof(buffer), "{X: %f, Y: %f}\n", vector.x, vector.y);
+    snprintf(buffer, sizeof(buffer), "{X: %f, Y: %f}", vector.x, vector.y);
 
     return strdup(buffer);
 }

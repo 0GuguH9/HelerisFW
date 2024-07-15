@@ -2,9 +2,20 @@
 #define HRS_GRAPHICS_RENDER_OPTIONS_H
 
 enum HRSFilter {
-    HRS_NEAREST,
-    HRS_LINER,
-    HRS_CUBIC,
+    HRS_FILTER_NEAREST,
+    HRS_FILTER_LINER,
+};
+
+enum HRSTextureRenderOptions {
+    HRS_TXT_R_OP_REPEAT,
+    HRS_TXT_R_OP_MIRROR_REPEAT,
+    HRS_TXT_R_OP_CLAMP_TO_EDGE,
+    HRS_TXT_R_OP_CLAMP_TO_BORDER,
+};
+
+enum HRSPolygonMode {
+    HRS_POLYGON_FILL,
+    HRS_POLYGON_LINE,
 };
 
 #endif

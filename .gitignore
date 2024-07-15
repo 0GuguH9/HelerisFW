@@ -95,5 +95,3 @@ _deps
 
 /build/
 /.cache/
-.clang-format
-

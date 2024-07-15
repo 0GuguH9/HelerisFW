@@ -1,13 +1,18 @@
 #ifndef HRS_GRAPHICS_DEVICE_H
 #define HRS_GRAPHICS_DEVICE_H
 
-enum HRSDevice {
-    HRS_DEVICE_LINUX,
-    HRS_DEVICE_WINDOWS,
+#include "../elements/size.h"
+
+enum HRSPlatform {
+    HRS_PLATFORM_LINUX,
+    HRS_PLATFORM_WINDOWS,
 };
 
 typedef struct HRSDeviceGraphics {
-    enum HRSDevice device;
+    enum HRSPlatform platform;
+    HRSSize maxWindowSize;
 } HRSDeviceGraphics;
+
+HRSDeviceGraphics hrsdgr_create();
 
 #endif

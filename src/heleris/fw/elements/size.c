@@ -24,7 +24,7 @@ HRSSize hrssz_scale(HRSSize size, float scale) {
 string_t hrssz_toString(HRSSize size) {
 
     char buffer[50];
-    snprintf(buffer, sizeof(buffer), "{Width: %d, Height: %d}\n", size.width, size.height);
+    snprintf(buffer, sizeof(buffer), "{Width: %d, Height: %d}", size.width, size.height);
 
     return strdup(buffer);
 }

@@ -3,6 +3,7 @@
 
 #include "../types.h"
 
+// Represents a point in a 2D space
 typedef struct HRSVector2 {
     float x;
     float y;

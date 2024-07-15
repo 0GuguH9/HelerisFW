@@ -2,6 +2,7 @@
 
 #include "heleris/fw/errors/error_presets.h"
 #include "heleris/fw/types.h"
+#include "heleris/fw/math/math.h"
 
 #include <GLFW/glfw3.h>
 #include <stdlib.h>
@@ -10,15 +11,24 @@ HRSWindow* hrswin_create(string_t name, HRSSize size, bool_t activeFullScreen){
 
     HRSWindow *helerisWindow = (HRSWindow*)malloc(sizeof(HRSWindow));
     
-    if (helerisWindow == NULL) 
+    if (helerisWindow == nullptr) 
         errpre_malloc("HRSWindow");
     
     helerisWindow->name = name;
     helerisWindow->size = size;
     helerisWindow->isFullScreen = activeFullScreen;
-    helerisWindow->onWindowResize = NULL;
-    helerisWindow->onWindowClose = NULL;
-    helerisWindow->onWindowClicked = NULL;
+    helerisWindow->onWindowResize = nullptr;
+    helerisWindow->onWindowClose = nullptr;
+    helerisWindow->onWindowClicked = nullptr;
+
+    if (size.width < 1)
+        size.width = 1;
+
+    if (size.height < 1)
+        size.height = 1;
+
+    helerisWindow->minimalSize.width = HRS_MIN(size.width, 800);
+    helerisWindow->minimalSize.height = HRS_MIN(size.height, 800);
     
     return helerisWindow;
 }
@@ -78,6 +88,21 @@ void hrswin_changeWindowSize(HRSWindow *window, HRSSize newSize) {
     glfwSetWindowSize(window->glfwWindow, newSize.width, newSize.height);
 }
 
+void hrswin_minimumWindowSize(HRSWindow *window, HRSSize newSize) {
+
+    hrswin_assert(window);
+
+    if (newSize.width < 1)
+        newSize.width = 1;
+
+    if (newSize.height < 1)
+        newSize.height = 1;
+
+    window->minimalSize.width = newSize.width;
+    window->minimalSize.height = newSize.height;
+
+    glfwSetWindowSize(window->glfwWindow, newSize.width, newSize.height);
+}
 void hrswin_changeBackgroundColor(HRSWindow *window, HRSColor backgroundColor) {
 
     hrswin_assert(window);

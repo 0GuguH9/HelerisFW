@@ -24,6 +24,27 @@ void hrsvc3_normalize(HRSVector3 vector) {
     }
 }
 
+void hrsvc3_fastNormalize(HRSVector3 *vector) {
+    float length = hrsvc3_length(*vector);
+
+    if (length != 0.0f) {
+
+        float inv_length;
+
+        uint32_t i = *(uint32_t *)&length;
+        i = 0x5f3759df - (i >> 1);
+        inv_length = *(float *)&i;
+
+        inv_length = inv_length * (1.5f - 0.5f * length * inv_length * inv_length);
+        inv_length = inv_length * (1.5f - 0.5f * length * inv_length * inv_length);
+        inv_length = inv_length * (1.5f - 0.5f * length * inv_length * inv_length);
+
+        vector->x *= inv_length;
+        vector->y *= inv_length;
+        vector->z *= inv_length;
+    }
+}
+
 HRSVector3 hrsvc3_add(HRSVector3 addend, HRSVector3 augend) {
 
     HRSVector3 result = { addend.x + augend.x, addend.y + augend.y , addend.z + augend.z };
