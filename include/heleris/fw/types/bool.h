@@ -5,22 +5,8 @@
 #ifndef HELERIS_TYPES_BOOL_H
 #define HELERIS_TYPES_BOOL_H
 
-#ifdef __cplusplus
-
-#define FALSE 0
-#define TRUE 1
-
-typedef bool bool_t;
-
-#else
-
-enum EHRSBool {
-    FALSE = 0,
-    TRUE = 1,
-};
-
-typedef enum EHRSBool bool_t;
-
+#ifndef __cplusplus
+#include <stdbool.h>
 #endif
 
 #endif

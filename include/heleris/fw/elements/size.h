@@ -17,7 +17,7 @@ HRSSize hrssz_create(int width, int height);
 /*
  * Compare two sizes and return if are equals
  */
-bool_t hrssz_equals(HRSSize size1, HRSSize size2);
+bool hrssz_equals(HRSSize size1, HRSSize size2);
 
 /*
  * Return the area of a size

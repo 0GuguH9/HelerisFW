@@ -65,7 +65,7 @@ HRSColor hrsclr_fromHexa(string_t hexa) {
 
     string_t formatedHexa = hexa;
 
-    bool_t hasHashtag = hexa[0] == '#' ? TRUE : FALSE;
+    bool hasHashtag = hexa[0] == '#' ? true : false;
 
     for (int i = hasHashtag ? 1 : 0 ; i < size; i ++)
         formatedHexa[i] = hexa[i];
