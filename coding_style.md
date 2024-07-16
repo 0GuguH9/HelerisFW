@@ -65,12 +65,6 @@ Variable suffixes are intended to show what that variable has. Remembering that 
      ```c
          int fileIndex;
      ```
-- **is, has, make and build**:
-     These prefixes are only applied to variables that serve as a flag (boolean) for something. Example:
-
-     ```c
-         bool_t isFullScreen;
-     ```
 - **_c**:
      This sufix marks a variable as a count, and normaly this goes with a value variable (see next sufix). The default value for this is *size_t*, but for args of main function, the normal type is *int*. Exemple:
 

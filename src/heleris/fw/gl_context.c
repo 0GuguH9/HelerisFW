@@ -13,7 +13,7 @@
 
 // Private fields:
 
-bool_t hasBeenInitialized = FALSE;
+bool hasBeenInitialized = false;
 
 void hrsglc_glfwResizeCallback(GLFWwindow *window, int width, int height) {
 
@@ -21,16 +21,16 @@ void hrsglc_glfwResizeCallback(GLFWwindow *window, int width, int height) {
 
     if (hrsWindow != nullptr && hrsWindow->onWindowResize != nullptr) {
 
-        if (width == hrsWindow->minimalSize.width && height == hrsWindow->minimalSize.height) {
+        if (width == hrsWindow->minimumSize.width && height == hrsWindow->minimumSize.height) {
 
             HRSSize newSize = { width, height };
             hrsWindow->size = newSize;
             return;
         }
 
-        if (width < hrsWindow->minimalSize.width || height == hrsWindow->minimalSize.height) {
+        if (width < hrsWindow->minimumSize.width || height == hrsWindow->minimumSize.height) {
 
-            glfwSetWindowSize(window, HRS_MAX(width, hrsWindow->minimalSize.width), HRS_MAX(height, hrsWindow->minimalSize.height));
+            glfwSetWindowSize(window, HRS_MAX(width, hrsWindow->minimumSize.width), HRS_MAX(height, hrsWindow->minimumSize.height));
             return;
         }
 
@@ -42,9 +42,11 @@ void hrsglc_glfwResizeCallback(GLFWwindow *window, int width, int height) {
 
 // Plublic fields:
 
+// Heap manipulation
+
 HRSGLContext* hrsglc_create(enum EHRSMajorVersion majorVersion, int minorVersion, enum EHRSProfileType profileType) {
 
-    if (hasBeenInitialized != FALSE) {
+    if (hasBeenInitialized != false) {
 
         HRSError error = {"attemp to create another type of \"HRSGLContext\"", "theres an attemp to create another \"HRSGLContext\" without finish other", HRS_ERROR_HRSGLC_ALREADY_INITIALIZED};
         hrserr_printAndStopProgram(&error);
@@ -61,8 +63,8 @@ HRSGLContext* hrsglc_create(enum EHRSMajorVersion majorVersion, int minorVersion
     context->majorVersion = majorVersion;
     context->minorVersion = minorVersion;
     context->profileType = profileType;
-    context->hasBeenInitialized = FALSE;
-    context->useVSync = FALSE;
+    context->hasBeenInitialized = false;
+    context->useVSync = false;
     context->swapCooldown = 0; // No cooldown
     context->fps = 0;
     context->window = nullptr;
@@ -77,7 +79,7 @@ void hrsglc_init(HRSGLContext *context, HRSWindow *window) {
     if (context == nullptr)
         errpre_nullptr("HRSGLContext");
 
-    if (context->hasBeenInitialized || hasBeenInitialized != FALSE) {
+    if (context->hasBeenInitialized || hasBeenInitialized != false) {
 
         HRSError error = {"attempt to reinitialize GLFW and GLAD", "there was an attempt to reset GLFW and GLAD, which may cause errors."
             " \nAvoid having more than one object of type \"HRSGLContext\"", HRS_ERROR_HRSGLC_ALREADY_INITIALIZED};
@@ -100,30 +102,47 @@ void hrsglc_init(HRSGLContext *context, HRSWindow *window) {
 
     context->window = window;
 
-    // Rust ownership concept :D
-    context->window->glfwWindow = glfwCreateWindow(context->window->size.width, context->window->size.height, context->window->name, NULL, NULL);
+    hrswin_init(context->window);
 
-    if (context->window->glfwWindow == nullptr) {
-
-        HRSError error = {"can't make a GLFWwindow", "probally you pc don't have the enough memory to alloc a glfwWindow", HRS_ERROR_GLFW_CANT_MAKE_WINDOW};
-        hrserr_printAndStopProgram(&error);
-    }
-
-    glfwMakeContextCurrent(context->window->glfwWindow); 
-
-    glfwSetWindowSizeLimits(context->window->glfwWindow, context->window->minimalSize.width, context->window->minimalSize.height, GLFW_DONT_CARE, GLFW_DONT_CARE);
-
-    glfwSetWindowUserPointer(context->window->glfwWindow, context->window);
     glfwSetFramebufferSizeCallback(window->glfwWindow, hrsglc_glfwResizeCallback);
-
+    
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 
         HRSError error = {"GLAD can't init", "GLAD can't get the correct address of OpenGL functions", HRS_ERROR_GLAD_CANT_FIND_IMPLEMENTATIONS};
         hrserr_printAndStopProgram(&error);
     }
 
-    context->hasBeenInitialized = TRUE;
+    context->hasBeenInitialized = true;
 }
+
+void hrsglc_assert(HRSGLContext *context) {
+    
+    if (context == nullptr) 
+        errpre_nullptr("HRSGLContext");
+
+    if (context->hasBeenInitialized != true || hasBeenInitialized != true) {
+
+        HRSError error = {"GLFW and GLAD not initialized", "attempt to use an object of type HRSGLContext without initializing GLAD or GLFW", HRS_ERROR_HRSGLC_NOT_INITIALIZED};
+        hrserr_printAndStopProgram(&error);
+    }
+}
+
+void hrsglc_terminate(HRSGLContext *context) {
+
+    hrsglc_assert(context);
+    
+    hrswin_free(context->window);
+    
+    free(context);
+
+    glfwTerminate();
+
+    hasBeenInitialized = false;
+
+    context = nullptr;
+}
+
+// Call backs
 
 void hrsglc_registerUpdateCallback(HRSGLContext *context, void (*onUpdate)(HRSGLContext *context, double deltaTime)) {
 
@@ -155,18 +174,13 @@ void hrsglc_registerDrawCallback(HRSGLContext *context, void (*draw)(HRSGLContex
     context->draw = draw;
 }
 
+// Context struct sets
+
 void hrsglc_cycleCooldown(HRSGLContext *context, double cooldown) {
 
     hrsglc_assert(context);
 
     context->swapCooldown = (int)(cooldown * 1000.0);
-}
-
-void hrsglc_vSync(HRSGLContext *context, bool_t newState) {
-
-    hrsglc_assert(context);
-
-    glfwSwapInterval(newState);
 }
 
 void hrsglc_startLoop(HRSGLContext *context) {
@@ -223,7 +237,7 @@ void hrsglc_startLoop(HRSGLContext *context) {
         if (context->draw != nullptr)
             context->draw(context, deviceGraphics);
 
-        hrsglc_swapBuffers(context);
+        glfwSwapBuffers(context->window->glfwWindow);
 
         glfwPollEvents();
     }
@@ -241,38 +255,11 @@ void hrsglc_closeLoop(HRSGLContext *context) {
         context->window->onWindowClose(context->window);
 }
 
-void hrsglc_swapBuffers(HRSGLContext *context) {
+// GLContext sets
+
+void hrsglc_vSync(HRSGLContext *context, bool newState) {
 
     hrsglc_assert(context);
-    
-    hrswin_assert(context->window);
 
-    glfwSwapBuffers(context->window->glfwWindow);
-}
-
-void hrsglc_assert(HRSGLContext *context) {
-    
-    if (context == nullptr) 
-        errpre_nullptr("HRSGLContext");
-
-    if (context->hasBeenInitialized != TRUE || hasBeenInitialized != TRUE) {
-
-        HRSError error = {"GLFW and GLAD not initialized", "attempt to use an object of type HRSGLContext without initializing GLAD or GLFW", HRS_ERROR_HRSGLC_NOT_INITIALIZED};
-        hrserr_printAndStopProgram(&error);
-    }
-}
-
-void hrsglc_terminate(HRSGLContext *context) {
-
-    hrsglc_assert(context);
-    
-    hrswin_free(context->window);
-    
-    free(context);
-
-    glfwTerminate();
-
-    hasBeenInitialized = FALSE;
-
-    context = nullptr;
+    glfwSwapInterval(newState);
 }

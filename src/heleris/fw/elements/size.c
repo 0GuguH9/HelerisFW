@@ -8,7 +8,7 @@ HRSSize hrssz_create(int width, int height) {
     return size;
 }
 
-bool_t hrssz_equals(HRSSize size1, HRSSize size2) {
+bool hrssz_equals(HRSSize size1, HRSSize size2) {
     return size1.width == size2.width && size1.height == size2.height;
 }
 

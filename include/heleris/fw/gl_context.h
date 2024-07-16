@@ -24,12 +24,12 @@ enum EHRSProfileType {
 
 // Structure representing an OpenGL context
 typedef struct HRSGLContext {
-    bool_t hasBeenInitialized;
+    bool hasBeenInitialized;
     enum EHRSProfileType profileType;                                           // OpenGL profile type
     enum EHRSMajorVersion majorVersion;                                         // Major version of OpenGL
     int minorVersion;                                                           // Minor version of OpenGL
     int swapCooldown;                                                           // Cooldown between update and Draw (calls only) 
-    bool_t useVSync;                                                            // Use V-Sync?
+    bool useVSync;                                                            // Use V-Sync?
     float estimatedFPS;                                                         // Estimated frames per second based on last deltaTime
     float fps;                                                                  // Frames per second
     HRSWindow *window;                                                          // Pointer to the current window
@@ -37,6 +37,8 @@ typedef struct HRSGLContext {
     void (*onFixedUpdate)(struct HRSGLContext *context, double fixedDeltaTime); // Fixed Update callback
     void (*draw)(struct HRSGLContext *context, HRSDeviceGraphics deviceGraphics);                               // Draw callback
 } HRSGLContext;
+
+// Heap manipulation
 
 /*
  * Create an heap object (an pointer to heap memory) of HRSGLContext. 
@@ -49,6 +51,18 @@ HRSGLContext* hrsglc_create(enum EHRSMajorVersion majorVersion, int minorVersion
  * You can't have more than one HRSGLContext actived in the same time.
  */
 void hrsglc_init(HRSGLContext *context, HRSWindow *window);
+
+/*
+ * Assert that the HRSGLContext object is not nullptr and has been initialized.
+ */
+void hrsglc_assert(HRSGLContext *context);
+
+/*
+ * Terminates and frees the OpenGL context.
+ */
+void hrsglc_terminate(HRSGLContext *context);
+
+// Call backs
 
 /*
  * Register the update callback
@@ -65,15 +79,12 @@ void hrsglc_registerFixedUpdateCallback(HRSGLContext *context, void (*onFixed)(H
  */
 void hrsglc_registerDrawCallback(HRSGLContext *context, void (*draw)(HRSGLContext *context, HRSDeviceGraphics deviceGraphics));
 
+// Context struct sets
+
 /*
  * Sets the update cycle cooldown (fixed update calls) for the OpenGL context in seconds. 
  */
 void hrsglc_cycleCooldown(HRSGLContext *context, double cooldown);
-
-/*
- * Set the new V-Sync state
- */
-void hrsglc_vSync(HRSGLContext *context, bool_t newState);
 
 /*
  * Starts the main loop for the OpenGL context.
@@ -86,20 +97,12 @@ void hrsglc_startLoop(HRSGLContext *context);
  */
 void hrsglc_closeLoop(HRSGLContext *context);
 
-/*
- * Swaps the buffers for the OpenGL context.
- */
-void hrsglc_swapBuffers(HRSGLContext *context);
+// GLContext sets
 
 /*
- * Assert that the HRSGLContext object is not nullptr and has been initialized.
+ * Set the new V-Sync state
  */
-void hrsglc_assert(HRSGLContext *context);
-
-/*
- * Terminates and frees the OpenGL context.
- */
-void hrsglc_terminate(HRSGLContext *context);
+void hrsglc_vSync(HRSGLContext *context, bool newState);
 
 #endif
 

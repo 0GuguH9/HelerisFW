@@ -18,12 +18,12 @@ HRSRectangle hrsrec_create(HRSVector2 pos, HRSSize size);
 /*
  * Return if the rectangle contains this position
  */
-bool_t hrsrec_contains(HRSRectangle rectangle, HRSVector2 vector);
+bool hrsrec_contains(HRSRectangle rectangle, HRSVector2 vector);
 
 /*
  * Return if a rectangle intersect another
  */
-bool_t hrsrec_intersect(HRSRectangle rectangle1, HRSRectangle rectangle2);
+bool hrsrec_intersect(HRSRectangle rectangle1, HRSRectangle rectangle2);
 
 /*
  * Convert to a string
