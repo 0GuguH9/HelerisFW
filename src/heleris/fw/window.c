@@ -12,7 +12,7 @@
 
 // Heap manipulation
 
-HRSWindow* hrswin_create(string_t name, HRSSize size, bool activeFullScreen){
+HRSWindow* hrswin_create(const string_t name, const HRSSize size, const bool activeFullScreen){
 
     HRSWindow *helerisWindow = (HRSWindow*)malloc(sizeof(HRSWindow));
     
@@ -20,17 +20,16 @@ HRSWindow* hrswin_create(string_t name, HRSSize size, bool activeFullScreen){
         errpre_malloc("HRSWindow");
     
     helerisWindow->name = name;
-    helerisWindow->size = size;
     helerisWindow->fullScreen = activeFullScreen;
     helerisWindow->onWindowResize = nullptr;
     helerisWindow->onWindowClose = nullptr;
     helerisWindow->onWindowClicked = nullptr;
 
-    size.width = HRS_MAX(size.width, 1);
-    size.height = HRS_MAX(size.height, 1);
+    helerisWindow->size.width = HRS_MAX(size.width, 1);
+    helerisWindow->size.height = HRS_MAX(size.height, 1);
 
-    helerisWindow->minimumSize.width = HRS_MIN(size.width, 800);
-    helerisWindow->minimumSize.height = HRS_MIN(size.height, 800);
+    helerisWindow->minimumSize.width = HRS_MIN(helerisWindow->size.width, 800);
+    helerisWindow->minimumSize.height = HRS_MIN(helerisWindow->size.height, 800);
     
     return helerisWindow;
 }
@@ -66,7 +65,7 @@ void hrswin_init(HRSWindow *window) {
     glfwSetWindowUserPointer(window->glfwWindow, window);
 }
 
-void hrswin_assert(HRSWindow *window) {
+void hrswin_assert(const HRSWindow *window) {
 
     if (window == nullptr) 
         errpre_nullptr("HRSWindow");
@@ -120,7 +119,7 @@ void hrswin_registerOnWindowCloseEvent(HRSWindow *window, void (*onWindowClose)(
 
 // Set new params
 
-void hrswin_changeName(HRSWindow *window, string_t newName) {
+void hrswin_changeName(HRSWindow *window, const string_t newName) {
 
     hrswin_assert(window);
 
@@ -203,7 +202,7 @@ void hrswin_maximumWindowSize(HRSWindow *window, HRSSize maximumSize) {
     glfwSetWindowSizeLimits(window->glfwWindow, window->minimumSize.width, window->minimumSize.height, window->maximumSize.width, window->maximumSize.height);
 }
 
-void hrswin_setAspectRadio(HRSWindow *window, HRSSize aspectRadio) {
+void hrswin_setAspectRadio(HRSWindow *window, const HRSSize aspectRadio) {
 
     hrswin_assert(window);
 
@@ -215,11 +214,12 @@ void hrswin_changeBackgroundColor(HRSWindow *window, HRSColor backgroundColor) {
     hrswin_assert(window);
 
     window->backgroundColor = backgroundColor;
+    glfwSetWindowOpacity(window->glfwWindow, hrsclr_toFloat(window->backgroundColor, HRS_COLOR_RGBA_A));
 }
 
 // Set GLFW window context
 
-void hrswin_visible(HRSWindow *window, bool visible) {
+void hrswin_visible(HRSWindow *window, const bool visible) {
 
     hrswin_assert(window);
     
@@ -231,7 +231,7 @@ void hrswin_visible(HRSWindow *window, bool visible) {
     window->visible = visible;
 }
 
-void hrswin_fullScreen(HRSWindow *window, bool fullScreen) {
+void hrswin_fullScreen(HRSWindow *window, const bool fullScreen) {
 
     hrswin_assert(window);
 

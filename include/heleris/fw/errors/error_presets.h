@@ -2,6 +2,7 @@
 #define HRS_ERROR_PRESETS_H
 
 #include "../types.h"
+#include "error.h"
 
 #define QUICK_DESCRIPTION(format, value) char description[256]; \
     snprintf(description, sizeof(description), format, value) \

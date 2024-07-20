@@ -49,7 +49,7 @@ typedef struct HRSWindow {
 /*
  * Create an heap object (an pointer to heap memory) of HRSWindow.
  */
-HRSWindow* hrswin_create(string_t name, HRSSize size, bool activeFullScreen);
+HRSWindow* hrswin_create(const string_t name, const HRSSize size, const bool activeFullScreen);
 
 /*
  * Initialize window object (don't use).
@@ -59,7 +59,7 @@ void hrswin_init(HRSWindow *window);
 /*
  * Assert that the HRSWindow object is not nullptr and has been initialized
  */
-void hrswin_assert(HRSWindow *window);
+void hrswin_assert(const HRSWindow *window);
 
 /*
  * Frees the specified window and its resources.
@@ -89,7 +89,7 @@ void hrswin_registerOnWindowCloseEvent(HRSWindow *window, void (*onWindowClose)(
 /*
  * Changes the name of the specified window.
  */
-void hrswin_changeName(HRSWindow *window, string_t newName);
+void hrswin_changeName(HRSWindow *window, const string_t newName);
 
 /*
  * Changes the size of the specified window.
@@ -113,24 +113,24 @@ void hrswin_maximumWindowSize(HRSWindow *window, HRSSize maximumSize);
  * Set the aspect radio of the window.
  * All possible window size will be a multipler of these values
  */
-void hrswin_setAspectRadio(HRSWindow *window, HRSSize aspectRadio);
+void hrswin_setAspectRadio(HRSWindow *window, const HRSSize aspectRadio);
 
 /*
  * Changes the background color of the specified window.
  */
-void hrswin_changeBackgroundColor(HRSWindow *window, HRSColor backgroundColor);
+void hrswin_changeBackgroundColor(HRSWindow *window, const HRSColor backgroundColor);
 
 // Set GLFW window context
 
 /*
  * Toggle if window will be visible or not
  */
-void hrswin_visible(HRSWindow *window, bool visible);
+void hrswin_visible(HRSWindow *window, const bool visible);
 
 /*
  * Toggle full screen
  */
-void hrswin_fullScreen(HRSWindow *window, bool fullScreen);
+void hrswin_fullScreen(HRSWindow *window, const bool fullScreen);
 
 // Get params
 

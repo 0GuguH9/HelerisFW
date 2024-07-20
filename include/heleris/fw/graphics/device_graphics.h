@@ -10,7 +10,7 @@ enum HRSPlatform {
 
 typedef struct HRSDeviceGraphics {
     enum HRSPlatform platform;
-    HRSSize maxWindowSize;
+    HRSSize viewSize;
 } HRSDeviceGraphics;
 
 HRSDeviceGraphics hrsdgr_create();

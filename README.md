@@ -36,7 +36,7 @@ int main() {
 
     HRSGLContext *context = hrsglc_create(HRS_GL_MAJOR_THREE, 3, HRS_GL_CORE_PROFILE);
 
-    HRSWindow *window = hrswin_create("Simple Window", hrssz_create(800, 600), FALSE);
+    HRSWindow *window = hrswin_create("Simple Window", hrssz_create(800, 600), false);
 
     hrsglc_init(context, window);
 

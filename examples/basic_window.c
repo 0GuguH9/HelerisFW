@@ -6,7 +6,7 @@ int main() {
     HRSGLContext *context = hrsglc_create(HRS_GL_MAJOR_THREE, 3, HRS_GL_CORE_PROFILE);
 
     // Creating the window...
-    HRSWindow *window = hrswin_create("Simple Window", hrssz_create(800, 600), FALSE);
+    HRSWindow *window = hrswin_create("Simple Window", hrssz_create(800, 600), false);
  
     // This initialize all glfw (window and input), glad (gl functions) and window (HRSWindow *)
     hrsglc_init(context, window);

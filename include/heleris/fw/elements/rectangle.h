@@ -13,21 +13,21 @@ typedef struct HRSRectangle {
 /*
  * Create a rectangle
  */
-HRSRectangle hrsrec_create(HRSVector2 pos, HRSSize size);
+HRSRectangle hrsrec_create(const HRSVector2 pos, const HRSSize size);
 
 /*
  * Return if the rectangle contains this position
  */
-bool hrsrec_contains(HRSRectangle rectangle, HRSVector2 vector);
+bool hrsrec_contains(const HRSRectangle rectangle, const HRSVector2 vector);
 
 /*
  * Return if a rectangle intersect another
  */
-bool hrsrec_intersect(HRSRectangle rectangle1, HRSRectangle rectangle2);
+bool hrsrec_intersect(const HRSRectangle rectangle1, const HRSRectangle rectangle2);
 
 /*
  * Convert to a string
  */
-string_t hrsrec_toString(HRSRectangle rectangle);
+string_t hrsrec_toString(const HRSRectangle rectangle);
 
 #endif

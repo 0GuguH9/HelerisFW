@@ -21,14 +21,14 @@ enum EHRSShaderType {
 typedef struct HRSShader {
     glObject_t glShader;
     enum EHRSShaderType type;
-    char *source;
+    const char *source;
 } HRSShader;
 
 
 /*
  * Create a shader with a source
  */
-HRSShader* hrssh_create(enum EHRSShaderType type, char *source);
+HRSShader* hrssh_create(const enum EHRSShaderType type, const char *source);
 
 /*
  * Compile a shader and set the source to nullptr.
@@ -39,7 +39,7 @@ void hrssh_compile(HRSShader *shader);
 /*
  * Assert the GL shader ins't null.
  */
-void hrssh_assert(HRSShader *shader);
+void hrssh_assert(const HRSShader *shader);
 
 /*
  * Free a shader
