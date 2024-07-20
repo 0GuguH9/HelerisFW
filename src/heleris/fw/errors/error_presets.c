@@ -1,6 +1,5 @@
 #include "heleris/fw/errors/error_presets.h"
 
-#include "heleris/fw/errors/error.h"
 #include "heleris/fw/errors/error_codes.h"
 
 #include <stdio.h>

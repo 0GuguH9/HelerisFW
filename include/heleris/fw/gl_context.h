@@ -12,7 +12,7 @@
 
 // Enumeration of OpenGL major supported versions (Major.Minor)
 enum EHRSMajorVersion {
-    HRS_GL_MAJOR_TREE = 3,
+    HRS_GL_MAJOR_THREE = 3,
     HRS_GL_MAJOR_FOUR,
 };
 
@@ -44,7 +44,7 @@ typedef struct HRSGLContext {
  * Create an heap object (an pointer to heap memory) of HRSGLContext. 
  * You can't create a HRSGLContext with another active.
  */
-HRSGLContext* hrsglc_create(enum EHRSMajorVersion majorVersion, int minorVersion, enum EHRSProfileType profileType);
+HRSGLContext* hrsglc_create(const enum EHRSMajorVersion majorVersion, const int minorVersion, const enum EHRSProfileType profileType);
 
 /*
  * Init all OpenGL context for the application. 
@@ -55,7 +55,7 @@ void hrsglc_init(HRSGLContext *context, HRSWindow *window);
 /*
  * Assert that the HRSGLContext object is not nullptr and has been initialized.
  */
-void hrsglc_assert(HRSGLContext *context);
+void hrsglc_assert(const HRSGLContext *context);
 
 /*
  * Terminates and frees the OpenGL context.
@@ -84,7 +84,7 @@ void hrsglc_registerDrawCallback(HRSGLContext *context, void (*draw)(HRSGLContex
 /*
  * Sets the update cycle cooldown (fixed update calls) for the OpenGL context in seconds. 
  */
-void hrsglc_cycleCooldown(HRSGLContext *context, double cooldown);
+void hrsglc_cycleCooldown(HRSGLContext *context, const double cooldown);
 
 /*
  * Starts the main loop for the OpenGL context.
@@ -102,7 +102,7 @@ void hrsglc_closeLoop(HRSGLContext *context);
 /*
  * Set the new V-Sync state
  */
-void hrsglc_vSync(HRSGLContext *context, bool newState);
+void hrsglc_vSync(HRSGLContext *context, const bool newState);
 
 #endif
 

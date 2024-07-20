@@ -21,36 +21,36 @@ typedef struct HRSColor {
 /*
  * Create a RGBA color from a RGB color
  */
-HRSColor hrsclr_fromRGB(byte_t r, byte_t g, byte_t b);
+HRSColor hrsclr_fromRGB(const byte_t r, const byte_t g, const byte_t b);
 
 /*
  * Create a color
  */
-HRSColor hrsclr_fromRGBA(byte_t r, byte_t g, byte_t b, byte_t a);
+HRSColor hrsclr_fromRGBA(const byte_t r, const byte_t g, const byte_t b, const byte_t a);
 
 /*
  * Create a RGBA color from a RGB float
  */
-HRSColor hrsclr_fromFRGB(float r, float g, float b);
+HRSColor hrsclr_fromFRGB(const float r, const float g, const float b);
 
 /*
  * Create a RGBA color from a RGBA float
  */
-HRSColor hrsclr_fromFRGBA(float r, float g, float b, float a);
+HRSColor hrsclr_fromFRGBA(const float r, const float g, const float b, const float a);
 
 /*
  * Convert a color value to a float value
  */
-float hrsclr_toFloat(HRSColor color, enum EHRSColorValue colorValue);
+float hrsclr_toFloat(const HRSColor color, const enum EHRSColorValue colorValue);
 
 /*
  * Create a RGBA colo from a hexa (experimental)
  */
-HRSColor hrsclr_fromHexa(string_t hexa);
+HRSColor hrsclr_fromHexa(const string_t hexa);
 
 /*
  * Convert to a string
  */
-string_t hrsclr_toString(HRSColor color);
+string_t hrsclr_toString(const HRSColor color);
 
 #endif

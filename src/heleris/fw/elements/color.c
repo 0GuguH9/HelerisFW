@@ -4,23 +4,23 @@
 
 #include <string.h>
 
-HRSColor hrsclr_fromRGB(byte_t r, byte_t g, byte_t b) {
+HRSColor hrsclr_fromRGB(const byte_t r, const byte_t g, const byte_t b) {
 
     return hrsclr_fromRGBA(r, g, b, 255);
 }
 
-HRSColor hrsclr_fromRGBA(byte_t r, byte_t g, byte_t b, byte_t a) {
+HRSColor hrsclr_fromRGBA(const byte_t r, const byte_t g, const byte_t b, const byte_t a) {
 
     HRSColor color = {r, g, b, a};
     return color;
 }
 
-HRSColor hrsclr_fromFRGB(float r, float g, float b) {
+HRSColor hrsclr_fromFRGB(const float r, const float g, const float b) {
 
     return hrsclr_fromFRGBA(r, g, b, 1.0f);
 }
 
-HRSColor hrsclr_fromFRGBA(float r, float g, float b, float a) {
+HRSColor hrsclr_fromFRGBA(const float r, const float g, const float b, const float a) {
 
     HRSColor color = {(byte_t)(BYTE_T_MAX * r), 
         (byte_t)(BYTE_T_MAX * g), 
@@ -30,7 +30,7 @@ HRSColor hrsclr_fromFRGBA(float r, float g, float b, float a) {
     return color;
 }
 
-float hrsclr_toFloat(HRSColor color, enum EHRSColorValue colorValue) {
+float hrsclr_toFloat(const HRSColor color, const enum EHRSColorValue colorValue) {
 
     switch (colorValue) {
         case HRS_COLOR_RGBA_R:
@@ -52,7 +52,7 @@ float hrsclr_toFloat(HRSColor color, enum EHRSColorValue colorValue) {
     return 0;
 }
 
-HRSColor hrsclr_fromHexa(string_t hexa) {
+HRSColor hrsclr_fromHexa(const string_t hexa) {
 
     int size = strlen(hexa);
 
@@ -105,7 +105,7 @@ HRSColor hrsclr_fromHexa(string_t hexa) {
     return color;
 }
 
-string_t hrsclr_toString(HRSColor color) {
+string_t hrsclr_toString(const HRSColor color) {
 
     char buffer[50];
     snprintf(buffer, sizeof(buffer), "{R: %d, G: %d, B: %d, A: %d}\n", color.r, color.g, color.b, color.a);

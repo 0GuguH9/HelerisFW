@@ -44,7 +44,7 @@ void hrsglc_glfwResizeCallback(GLFWwindow *window, int width, int height) {
 
 // Heap manipulation
 
-HRSGLContext* hrsglc_create(enum EHRSMajorVersion majorVersion, int minorVersion, enum EHRSProfileType profileType) {
+HRSGLContext* hrsglc_create(const enum EHRSMajorVersion majorVersion, const int minorVersion, const enum EHRSProfileType profileType) {
 
     if (hasBeenInitialized != false) {
 
@@ -57,7 +57,7 @@ HRSGLContext* hrsglc_create(enum EHRSMajorVersion majorVersion, int minorVersion
     if (context == nullptr) 
         errpre_malloc("HRSGLContext");
 
-    if (majorVersion == HRS_GL_MAJOR_TREE && minorVersion < 3)
+    if (majorVersion == HRS_GL_MAJOR_THREE && minorVersion < 3)
         errpre_invalidArgument("int minorVersion (minimum version with HRS_GL_MAJOR_TREE is 3)");
 
     context->majorVersion = majorVersion;
@@ -115,7 +115,7 @@ void hrsglc_init(HRSGLContext *context, HRSWindow *window) {
     context->hasBeenInitialized = true;
 }
 
-void hrsglc_assert(HRSGLContext *context) {
+void hrsglc_assert(const HRSGLContext *context) {
     
     if (context == nullptr) 
         errpre_nullptr("HRSGLContext");
@@ -176,7 +176,7 @@ void hrsglc_registerDrawCallback(HRSGLContext *context, void (*draw)(HRSGLContex
 
 // Context struct sets
 
-void hrsglc_cycleCooldown(HRSGLContext *context, double cooldown) {
+void hrsglc_cycleCooldown(HRSGLContext *context, const double cooldown) {
 
     hrsglc_assert(context);
 
@@ -257,9 +257,10 @@ void hrsglc_closeLoop(HRSGLContext *context) {
 
 // GLContext sets
 
-void hrsglc_vSync(HRSGLContext *context, bool newState) {
+void hrsglc_vSync(HRSGLContext *context, const bool newState) {
 
     hrsglc_assert(context);
 
+    context->useVSync = newState;
     glfwSwapInterval(newState);
 }
