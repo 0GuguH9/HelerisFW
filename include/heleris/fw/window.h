@@ -26,10 +26,10 @@ typedef struct HRSWindow {
 
     // GLFW hint datas
     // Booleans
-    bool fullScreen;          // is in full screen?
+    bool fullScreen;            // is in full screen?
     bool canResize;             // can be resized?
-    bool visible;             // is visible?
-    bool hasBorder;            // has a border?
+    bool visible;               // is visible?
+    bool hasBorder;             // has a border?
 
     // Sizes
     HRSSize minimumSize;                                         // Minimal Window size
@@ -123,14 +123,24 @@ void hrswin_changeBackgroundColor(HRSWindow *window, const HRSColor backgroundCo
 // Set GLFW window context
 
 /*
+ * Toggle full screen
+ */
+void hrswin_fullScreen(HRSWindow *window, const bool fullScreen);
+
+/*
+ * Toggle if window can be resized
+ */
+void hrswin_canResize(HRSWindow *window, const bool canResize);
+
+/*
  * Toggle if window will be visible or not
  */
 void hrswin_visible(HRSWindow *window, const bool visible);
 
 /*
- * Toggle full screen
+ * Toggle if window has a border (decorated)
  */
-void hrswin_fullScreen(HRSWindow *window, const bool fullScreen);
+void hrswin_border(HRSWindow *window, const bool border);
 
 // Get params
 

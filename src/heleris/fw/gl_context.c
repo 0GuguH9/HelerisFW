@@ -65,7 +65,7 @@ HRSGLContext* hrsglc_create(const enum EHRSMajorVersion majorVersion, const int 
     context->profileType = profileType;
     context->hasBeenInitialized = false;
     context->useVSync = false;
-    context->swapCooldown = 0; // No cooldown
+    context->swapCooldown = 1.0 / 60.0; 
     context->fps = 0;
     context->window = nullptr;
     context->draw = nullptr;
@@ -112,6 +112,9 @@ void hrsglc_init(HRSGLContext *context, HRSWindow *window) {
         hrserr_printAndStopProgram(&error);
     }
 
+    glfwSwapInterval(context->useVSync);
+
+    hasBeenInitialized = true;
     context->hasBeenInitialized = true;
 }
 
@@ -144,6 +147,26 @@ void hrsglc_terminate(HRSGLContext *context) {
 
 // Call backs
 
+void hrsglc_registerUpdatePreFixedCallback(HRSGLContext *context, void (*onUpdatePreFixed)(HRSGLContext *context, double deltaTime)) {
+
+    hrsglc_assert(context);
+
+    if (onUpdatePreFixed == nullptr)
+        errpre_nullptr("void (*onUpdatePreFixed)(HRSGLContext *context, double deltaTime)");
+
+    context->onUpdatePreFixed = onUpdatePreFixed;
+}
+
+void hrsglc_registerFixedUpdateCallback(HRSGLContext *context, void (*onFixedUpdate)(HRSGLContext *context, double fixedDeltaTime)) {
+
+    hrsglc_assert(context);
+
+    if (onFixedUpdate == nullptr)
+        errpre_nullptr("void (*onFixedUpdate)(HRSGLContext *context, double fixedDeltaTime)");
+
+    context->onFixedUpdate = onFixedUpdate;
+}
+
 void hrsglc_registerUpdateCallback(HRSGLContext *context, void (*onUpdate)(HRSGLContext *context, double deltaTime)) {
 
     hrsglc_assert(context);
@@ -154,14 +177,14 @@ void hrsglc_registerUpdateCallback(HRSGLContext *context, void (*onUpdate)(HRSGL
     context->onUpdate = onUpdate;
 }
 
-void hrsglc_registerFixedUpdateCallback(HRSGLContext *context, void (*onFixedUpdate)(HRSGLContext *context, double fixedDeltaTime)) {
+void hrsglc_registerFixedPostUpdateCallback(HRSGLContext *context, void (*onFixedPostUpdate)(HRSGLContext *context, double fixedDeltaTime)) {
 
     hrsglc_assert(context);
 
-    if (onFixedUpdate == nullptr)
-        errpre_nullptr("void (*onFixedUpdate)(HRSGLContext *context, double deltaTime)");
+    if (onFixedPostUpdate == nullptr)
+        errpre_nullptr("void (*onFixedPostUpdate)(HRSGLContext *context, double fixedDeltaTime)");
 
-    context->onFixedUpdate = onFixedUpdate;
+    context->onFixedPostUpdate = onFixedPostUpdate;
 }
 
 void hrsglc_registerDrawCallback(HRSGLContext *context, void (*draw)(HRSGLContext *context, HRSDeviceGraphics deviceGraphics)) {
@@ -180,7 +203,7 @@ void hrsglc_cycleCooldown(HRSGLContext *context, const double cooldown) {
 
     hrsglc_assert(context);
 
-    context->swapCooldown = (int)(cooldown * 1000.0);
+    context->swapCooldown = cooldown;
 }
 
 void hrsglc_startLoop(HRSGLContext *context) {
@@ -192,8 +215,13 @@ void hrsglc_startLoop(HRSGLContext *context) {
     double previousTime = glfwGetTime();
     double previousFixedTime = glfwGetTime();
     double currentTime;
+
     double deltaTime;
     double fixedDeltaTime;
+
+    double fixedDeltaAccumulator = 0;
+    int postFixedCalls = 0;
+
     double fpsTimer = 0.0;
     int frameCount = 0;
 
@@ -211,26 +239,57 @@ void hrsglc_startLoop(HRSGLContext *context) {
         if (fpsTimer >= 1.0) {
 
             context->fps = frameCount / fpsTimer;
-            fpsTimer = 0.0;
+            fpsTimer -= 1.0;
             frameCount = 0;
         }
 
         context->estimatedFPS = 1.0 / deltaTime;
 
+        if (context->onUpdatePreFixed != nullptr)
+            context->onUpdatePreFixed(context, deltaTime);
+
+        fixedDeltaTime = glfwGetTime() - previousFixedTime;
+
+        fixedDeltaAccumulator += deltaTime;
+
+        while (fixedDeltaAccumulator >= context->swapCooldown) {
+
+            previousFixedTime = glfwGetTime();
+
+            if (context->onFixedUpdate != nullptr) {
+                context->onFixedUpdate(context, fixedDeltaTime);
+            }
+
+            fixedDeltaAccumulator -= fixedDeltaTime;
+
+            fixedDeltaTime = glfwGetTime() - previousFixedTime;
+
+            postFixedCalls++;
+        }
+
         if (context->onUpdate != nullptr)
             context->onUpdate(context, deltaTime);
 
-        fixedDeltaTime = currentTime - previousFixedTime;
+        double fixedPostDeltaTime = glfwGetTime() - previousFixedTime;
 
-        if (context->swapCooldown / 1000.0 <= fixedDeltaTime && context->onFixedUpdate != nullptr) {
+        double postFixedTime = previousTime;
+
+        while (postFixedCalls > 0) {
+
+            postFixedTime = glfwGetTime();
             
-            context->onFixedUpdate(context, fixedDeltaTime);
-            previousFixedTime = currentTime;
+            if (context->onFixedPostUpdate != nullptr)
+                context->onFixedPostUpdate(context, fixedPostDeltaTime);
+
+            fixedPostDeltaTime = glfwGetTime() - postFixedTime;
+
+            postFixedCalls--;
         }
+
         glClearColor(hrsclr_toFloat(context->window->backgroundColor, HRS_COLOR_RGBA_R),
             hrsclr_toFloat(context->window->backgroundColor, HRS_COLOR_RGBA_G),
             hrsclr_toFloat(context->window->backgroundColor, HRS_COLOR_RGBA_B),
-            hrsclr_toFloat(context->window->backgroundColor, HRS_COLOR_RGBA_A));
+            1);
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -264,3 +323,4 @@ void hrsglc_vSync(HRSGLContext *context, const bool newState) {
     context->useVSync = newState;
     glfwSwapInterval(newState);
 }
+

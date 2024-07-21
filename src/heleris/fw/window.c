@@ -1,6 +1,7 @@
 #include "heleris/fw/window.h"
 
 #include "heleris/fw/elements/color.h"
+#include "heleris/fw/elements/size.h"
 #include "heleris/fw/errors/error.h"
 #include "heleris/fw/errors/error_codes.h"
 #include "heleris/fw/errors/error_presets.h"
@@ -30,13 +31,19 @@ HRSWindow* hrswin_create(const string_t name, const HRSSize size, const bool act
 
     helerisWindow->minimumSize.width = HRS_MIN(helerisWindow->size.width, 800);
     helerisWindow->minimumSize.height = HRS_MIN(helerisWindow->size.height, 800);
+
+    helerisWindow->canResize = true;
+    helerisWindow->visible = true;
+    helerisWindow->hasBorder = true;
     
     return helerisWindow;
 }
 
 void hrswin_init(HRSWindow *window) {
     
-    window->glfwWindow = glfwCreateWindow(window->size.width, window->size.height, window->name, window->visible ? glfwGetPrimaryMonitor() : NULL, NULL);
+    window->mainMonitor = glfwGetPrimaryMonitor();
+
+    window->glfwWindow = glfwCreateWindow(window->size.width, window->size.height, window->name, window->fullScreen ? window->mainMonitor : NULL, NULL);
 
     if (window->glfwWindow == nullptr) {
 
@@ -45,8 +52,6 @@ void hrswin_init(HRSWindow *window) {
     }
 
     glfwMakeContextCurrent(window->glfwWindow);
-
-    window->mainMonitor = glfwGetWindowMonitor(window->glfwWindow);
 
     glfwSetWindowOpacity(window->glfwWindow, hrsclr_toFloat(window->backgroundColor, HRS_COLOR_RGBA_A));
 
@@ -59,6 +64,9 @@ void hrswin_init(HRSWindow *window) {
 
         window->maximumSize = hrswin_getMonitorSecureArea(window).size;
     }
+
+    glfwSetWindowAttrib(window->glfwWindow, GLFW_DECORATED, window->hasBorder);
+    glfwSetWindowAttrib(window->glfwWindow, GLFW_RESIZABLE, window->canResize);
 
     glfwSetWindowSizeLimits(window->glfwWindow, window->minimumSize.width, window->minimumSize.height, window->maximumSize.width, window->maximumSize.height);
 
@@ -219,18 +227,6 @@ void hrswin_changeBackgroundColor(HRSWindow *window, HRSColor backgroundColor) {
 
 // Set GLFW window context
 
-void hrswin_visible(HRSWindow *window, const bool visible) {
-
-    hrswin_assert(window);
-    
-    if (visible)
-        glfwShowWindow(window->glfwWindow);
-    else
-        glfwHideWindow(window->glfwWindow);
-
-    window->visible = visible;
-}
-
 void hrswin_fullScreen(HRSWindow *window, const bool fullScreen) {
 
     hrswin_assert(window);
@@ -248,13 +244,39 @@ void hrswin_fullScreen(HRSWindow *window, const bool fullScreen) {
         const GLFWvidmode *mode = glfwGetVideoMode(window->mainMonitor);
 
         glfwSetWindowMonitor(window->glfwWindow, window->mainMonitor, 0, 0, mode->width, mode->height, mode->refreshRate);
-    } else {
-        
-        int x = window->windedPos.x;
-        int y = window->windedPos.y;
+    } 
+    else
+        glfwSetWindowMonitor(window->glfwWindow, NULL, window->windedPos.x, window->windedPos.y, window->size.width, window->size.height, 0);
+}
 
-        glfwSetWindowMonitor(window->glfwWindow, NULL, 0, 0, window->size.width, window->size.height, 0);
-    }
+void hrswin_canResize(HRSWindow *window, const bool canResize) {
+
+    hrswin_assert(window);
+    
+    glfwSetWindowAttrib(window->glfwWindow, GLFW_RESIZABLE, canResize);
+
+    window->canResize = canResize;
+}
+
+void hrswin_visible(HRSWindow *window, const bool visible) {
+
+    hrswin_assert(window);
+    
+    if (visible)
+        glfwShowWindow(window->glfwWindow);
+    else
+        glfwHideWindow(window->glfwWindow);
+
+    window->visible = visible;
+}
+
+void hrswin_border(HRSWindow *window, const bool border) {
+
+    hrswin_assert(window);
+    
+    glfwSetWindowAttrib(window->glfwWindow, GLFW_DECORATED, border);
+
+    window->hasBorder = border;
 }
 
 // Get params
@@ -262,6 +284,7 @@ void hrswin_fullScreen(HRSWindow *window, const bool fullScreen) {
 HRSRectangle hrswin_getMonitorSecureArea(HRSWindow *window) {
 
     int x, y, width, height;
+
     glfwGetMonitorWorkarea(window->mainMonitor, &x, &y, &width, &height);
     
     return hrsrec_create(hrsvc2_create(x, y), hrssz_create(width, height));

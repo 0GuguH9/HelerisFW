@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.11)
 project(Heleris)
 
 set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_FLAGS "${CMAKE_FLAGS} -Wextra -Wall")
 
 file(GLOB SRC_FILES ${PROJECT_SOURCE_DIR}/src/heleris/fw/*.c)
 

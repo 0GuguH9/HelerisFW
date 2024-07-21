@@ -1,7 +1,7 @@
 #ifndef HRS_GRAPHICS_DEVICE_H
 #define HRS_GRAPHICS_DEVICE_H
 
-#include "../elements/size.h"
+#include "../window.h"
 
 enum HRSPlatform {
     HRS_PLATFORM_LINUX,
@@ -10,7 +10,6 @@ enum HRSPlatform {
 
 typedef struct HRSDeviceGraphics {
     enum HRSPlatform platform;
-    HRSSize viewSize;
 } HRSDeviceGraphics;
 
 HRSDeviceGraphics hrsdgr_create();

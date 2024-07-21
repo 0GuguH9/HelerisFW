@@ -22,6 +22,8 @@ enum EHRSErrorCodes {
     HRS_ERROR_HRSGLC_NOT_INITIALIZED,
     // HRSContextLoader erros
     HRS_ERROR_HRSCLD_LOAD_FAILED,
+    // Shader errors
+    HRS_ERROR_SHADER_FAILED_COMPILATION,
 };
 
 #endif 
