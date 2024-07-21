@@ -25,17 +25,19 @@ enum EHRSProfileType {
 // Structure representing an OpenGL context
 typedef struct HRSGLContext {
     bool hasBeenInitialized;
-    enum EHRSProfileType profileType;                                           // OpenGL profile type
-    enum EHRSMajorVersion majorVersion;                                         // Major version of OpenGL
-    int minorVersion;                                                           // Minor version of OpenGL
-    int swapCooldown;                                                           // Cooldown between update and Draw (calls only) 
-    bool useVSync;                                                            // Use V-Sync?
-    float estimatedFPS;                                                         // Estimated frames per second based on last deltaTime
-    float fps;                                                                  // Frames per second
-    HRSWindow *window;                                                          // Pointer to the current window
-    void (*onUpdate)(struct HRSGLContext *context, double deltaTime);           // Update callback
-    void (*onFixedUpdate)(struct HRSGLContext *context, double fixedDeltaTime); // Fixed Update callback
-    void (*draw)(struct HRSGLContext *context, HRSDeviceGraphics deviceGraphics);                               // Draw callback
+    bool useVSync;                                                                 // Use V-Sync?
+    enum EHRSProfileType profileType;                                              // OpenGL profile type
+    enum EHRSMajorVersion majorVersion;                                            // Major version of OpenGL
+    int minorVersion;                                                              // Minor version of OpenGL
+    float estimatedFPS;                                                            // Estimated frames per second based on last deltaTime
+    float fps;                                                                     // Frames per second
+    double swapCooldown;                                                           // Cycle cooldown of fixed update call back
+    HRSWindow *window;                                                             // Pointer to the current window
+    void (*onUpdatePreFixed)(struct HRSGLContext *context, double deltaTime);      // Update pre Fixed Update callback
+    void (*onFixedUpdate)(struct HRSGLContext *context, double fixedDeltaTime);    // Fixed Update callback
+    void (*onUpdate)(struct HRSGLContext *context, double deltaTime);              // Update callback
+    void (*onFixedPostUpdate)(struct HRSGLContext *context, double fixedDeltaTime);// Fixed Update post Update callback
+    void (*draw)(struct HRSGLContext *context, HRSDeviceGraphics deviceGraphics);  // Draw callback
 } HRSGLContext;
 
 // Heap manipulation
@@ -65,14 +67,24 @@ void hrsglc_terminate(HRSGLContext *context);
 // Call backs
 
 /*
+ * Register the update pre fixed update callback
+ */
+void hrsglc_registerUpdatePreFixedCallback(HRSGLContext *context, void (*onUpdatePreFixed)(HRSGLContext *context, double deltaTime));
+
+/*
+ * Register the fixed update callback
+ */
+void hrsglc_registerFixedUpdateCallback(HRSGLContext *context, void (*onFixedUpdate)(HRSGLContext *context, double fixedDeltaTime));
+
+/*
  * Register the update callback
  */
 void hrsglc_registerUpdateCallback(HRSGLContext *context, void (*onUpdate)(HRSGLContext *context, double deltaTime));
 
 /*
- * Register the fixed update callback
+ * Register the update post fixed and update callback
  */
-void hrsglc_registerFixedUpdateCallback(HRSGLContext *context, void (*onFixed)(HRSGLContext *context, double fixedDeltaTime));
+void hrsglc_registerFixedPostUpdateCallback(HRSGLContext *context, void (*onUpdatePostFixed)(HRSGLContext *context, double fixedDeltaTime));
 
 /*
  * Register the draw callback
@@ -105,4 +117,3 @@ void hrsglc_closeLoop(HRSGLContext *context);
 void hrsglc_vSync(HRSGLContext *context, const bool newState);
 
 #endif
-
