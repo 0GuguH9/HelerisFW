@@ -11,8 +11,8 @@ HRSColor hrsclr_fromRGB(const byte_t r, const byte_t g, const byte_t b) {
 
 HRSColor hrsclr_fromRGBA(const byte_t r, const byte_t g, const byte_t b, const byte_t a) {
 
-    HRSColor color = {r, g, b, a};
-    return color;
+    HRSColor _color = {r, g, b, a};
+    return _color;
 }
 
 HRSColor hrsclr_fromFRGB(const float r, const float g, const float b) {
@@ -22,28 +22,28 @@ HRSColor hrsclr_fromFRGB(const float r, const float g, const float b) {
 
 HRSColor hrsclr_fromFRGBA(const float r, const float g, const float b, const float a) {
 
-    HRSColor color = {(byte_t)(BYTE_T_MAX * r), 
+    HRSColor _color = {(byte_t)(BYTE_T_MAX * r), 
         (byte_t)(BYTE_T_MAX * g), 
         (byte_t)(BYTE_T_MAX * b), 
         (byte_t)(BYTE_T_MAX * a)};
 
-    return color;
+    return _color;
 }
 
-float hrsclr_toFloat(const HRSColor color, const enum EHRSColorValue colorValue) {
+float hrsclr_toFloat(const HRSColor _color, const enum EHRSColorValue colorValue) {
 
     switch (colorValue) {
         case HRS_COLOR_RGBA_R:
-            return (float)color.r / BYTE_T_MAX;
+            return (float)_color.r / BYTE_T_MAX;
         break;
         case HRS_COLOR_RGBA_G:
-            return (float)color.g / BYTE_T_MAX;
+            return (float)_color.g / BYTE_T_MAX;
         break;
         case HRS_COLOR_RGBA_B:
-            return (float)color.b / BYTE_T_MAX;
+            return (float)_color.b / BYTE_T_MAX;
         break;
         case HRS_COLOR_RGBA_A:
-            return (float)color.a / BYTE_T_MAX;
+            return (float)_color.a / BYTE_T_MAX;
         break;
     }
 
@@ -84,31 +84,31 @@ HRSColor hrsclr_fromHexa(const string_t hexa) {
             errpre_invalidArgument("string_t hexa (from hrsclr_fromHexa, wrong hexa)");
     }
     
-    HRSColor color = {0, 0, 0, 0};
+    HRSColor _color = {0, 0, 0, 0};
 
-    color.r = value[0];
-    color.r <<= 4;
-    color.r |= value[1];
+    _color.r = value[0];
+    _color.r <<= 4;
+    _color.r |= value[1];
 
-    color.g = value[2];
-    color.g <<= 4;
-    color.g |= value[3];
+    _color.g = value[2];
+    _color.g <<= 4;
+    _color.g |= value[3];
 
-    color.b = value[4];
-    color.b <<= 4;
-    color.b |= value[5];
+    _color.b = value[4];
+    _color.b <<= 4;
+    _color.b |= value[5];
 
-    color.a = value[6];
-    color.a <<= 4;
-    color.a |= value[7];
+    _color.a = value[6];
+    _color.a <<= 4;
+    _color.a |= value[7];
 
-    return color;
+    return _color;
 }
 
-string_t hrsclr_toString(const HRSColor color) {
+string_t hrsclr_toString(const HRSColor _color) {
 
     char buffer[50];
-    snprintf(buffer, sizeof(buffer), "{R: %d, G: %d, B: %d, A: %d}\n", color.r, color.g, color.b, color.a);
+    snprintf(buffer, sizeof(buffer), "{R: %d, G: %d, B: %d, A: %d}\n", _color.r, _color.g, _color.b, _color.a);
 
     return strdup(buffer);
 }

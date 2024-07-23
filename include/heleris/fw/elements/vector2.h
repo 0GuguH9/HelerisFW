@@ -61,7 +61,7 @@ HRSVector2 hrsvc2_multiply(const HRSVector2 multiplicand, const HRSVector2 multi
 /*
  * Distance from a vector to another (in 2D space)
  */
-float hrsvc2_distance(const HRSVector2 vector1, const HRSVector2 vector2);
+float hrsvc2_distance(const HRSVector2 vector1, const HRSVector2 _vector2);
 
 /*
  * Convert to a string

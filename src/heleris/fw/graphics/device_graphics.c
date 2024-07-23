@@ -2,13 +2,13 @@
 
 HRSDeviceGraphics hrsdgr_create() {
 
-    HRSDeviceGraphics deviceGraphics;
+    HRSDeviceGraphics _deviceGraphics;
 
 #ifdef __linux
-    deviceGraphics.platform = HRS_PLATFORM_LINUX;
+    _deviceGraphics.platform = HRS_PLATFORM_LINUX;
 #elif defined(__WIN32) || defined(__WIN64)
     deviceGraphics.platform = HRS_PLATFORM_WINDOWS;
 #endif    
 
-    return deviceGraphics;
+    return _deviceGraphics;
 }

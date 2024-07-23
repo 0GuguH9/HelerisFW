@@ -9,8 +9,8 @@ typedef struct HRSError {
     int id;
 } HRSError;
 
-void hrserr_print(HRSError *error);
+void hrserr_print(HRSError *_error);
 
-void hrserr_printAndStopProgram(HRSError *error);
+void hrserr_printAndStopProgram(HRSError *_error);
 
 #endif

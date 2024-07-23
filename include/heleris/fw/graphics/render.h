@@ -1,6 +1,8 @@
 #ifndef HRS_GRAPHICS_DRAW_BATCH_H
 #define HRS_GRAPHICS_DRAW_BATCH_H
 
+#include "vbo.h"
+#include "vao.h"
 #include "render_options.h"
 #include "shader_program.h"
 
@@ -11,25 +13,36 @@
  * You can use only the struct.
  */
 typedef struct HRSRender {
-    HRSShaderProgram *shaderProgram;
-    enum HRSFilter filter;
-    enum HRSTextureRenderOptions textureRenderOptions;
+    HRSShaderProgram *_shaderProgram;
+    HRSRenderOptions _renderOptions;
+    HRSVAO *_vao;
+    HRSVBO *_vbo;
 } HRSRender;
+
+// Heap manipulation
 
 /*
  * Create a render object.
  */
-HRSRender* hrsr_create();
+HRSRender* hrsr_create(HRSShaderProgram *_shaderProgram, HRSRenderOptions _renderOptions, HRSVAO *_vao, HRSVBO *_vbo);
+
+/*
+ * Assert that the HRSRender object is not a nullptr
+ */
+void hrsr_assert(HRSRender *_render);
 
 /*
  * Start rendering.
- * Only use if you want to use this style (i.e. making your only presets)
+ * Apply these settings:
+ *  - Use shaders.
+ *  - Apply render options.
+ * Only use if you want to use this style (i.e. making your only presets) and not the drawbatch style
  */
-void hrsr_startRender(HRSRender *render);
+void hrsr_startRender(HRSRender *_render);
 
 /*
  * Free a render.
  */
-void hrsr_free(HRSRender *render);
+void hrsr_free(HRSRender *_render);
 
 #endif
