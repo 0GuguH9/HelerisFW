@@ -20,6 +20,19 @@
 #include "elements/size.h"
 #include "elements/rectangle.h"
 
+// Content
+#include "content/texture.h"
+#include "content/content_loader.h"
+
+// Graphics
+#include "graphics/shader.h"
+#include "graphics/shader_program.h"
+#include "graphics/vbo.h"
+#include "graphics/vao.h"
+#include "graphics/render_options.h"
+#include "graphics/device_graphics.h"
+#include "graphics/render.h"
+
 // Input files (not implemented)
 
 // Low order main files

@@ -8,7 +8,6 @@
 
 #include "heleris/fw/math/math.h"
 
-#include <GLFW/glfw3.h>
 #include <stdlib.h>
 
 // Private fields:
@@ -24,7 +23,7 @@ void hrsglc_glfwResizeCallback(GLFWwindow *window, int width, int height) {
         if (width == hrsWindow->minimumSize.width && height == hrsWindow->minimumSize.height) {
 
             HRSSize newSize = { width, height };
-            hrsWindow->size = newSize;
+            hrsWindow->_size = newSize;
             return;
         }
 
@@ -35,8 +34,8 @@ void hrsglc_glfwResizeCallback(GLFWwindow *window, int width, int height) {
         }
 
         HRSSize newSize = { width, height };
-        hrsWindow->size = hrsWindow->onWindowResize(hrsWindow, newSize);
-        glViewport(0, 0, hrsWindow->size.width, hrsWindow->size.height);
+        hrsWindow->_size = hrsWindow->onWindowResize(hrsWindow, newSize);
+        glViewport(0, 0, hrsWindow->_size.width, hrsWindow->_size.height);
     }
 }
 
@@ -44,173 +43,173 @@ void hrsglc_glfwResizeCallback(GLFWwindow *window, int width, int height) {
 
 // Heap manipulation
 
-HRSGLContext* hrsglc_create(const enum EHRSMajorVersion majorVersion, const int minorVersion, const enum EHRSProfileType profileType) {
+HRSGLContext* hrsglc_create(const enum EHRSMajorVersion _majorVersion, const int minorVersion, const enum EHRSProfileType _profileType) {
 
     if (hasBeenInitialized != false) {
 
-        HRSError error = {"attemp to create another type of \"HRSGLContext\"", "theres an attemp to create another \"HRSGLContext\" without finish other", HRS_ERROR_HRSGLC_ALREADY_INITIALIZED};
-        hrserr_printAndStopProgram(&error);
+        HRSError _error = {"attemp to create another type of \"HRSGLContext\"", "theres an attemp to create another \"HRSGLContext\" without finish other", HRS_ERROR_HRSGLC_ALREADY_INITIALIZED};
+        hrserr_printAndStopProgram(&_error);
     }
 
-    HRSGLContext *context = malloc(sizeof(HRSGLContext));
+    HRSGLContext *_glContext = malloc(sizeof(HRSGLContext));
 
-    if (context == nullptr) 
+    if (_glContext == nullptr) 
         errpre_malloc("HRSGLContext");
 
-    if (majorVersion == HRS_GL_MAJOR_THREE && minorVersion < 3)
+    if (_majorVersion == HRS_GL_MAJOR_THREE && minorVersion < 3)
         errpre_invalidArgument("int minorVersion (minimum version with HRS_GL_MAJOR_TREE is 3)");
 
-    context->majorVersion = majorVersion;
-    context->minorVersion = minorVersion;
-    context->profileType = profileType;
-    context->hasBeenInitialized = false;
-    context->useVSync = false;
-    context->swapCooldown = 1.0 / 60.0; 
-    context->fps = 0;
-    context->window = nullptr;
-    context->draw = nullptr;
-    context->onUpdate = nullptr;
+    _glContext->_majorVersion = _majorVersion;
+    _glContext->minorVersion = minorVersion;
+    _glContext->_profileType = _profileType;
+    _glContext->hasBeenInitialized = false;
+    _glContext->useVSync = false;
+    _glContext->swapCooldown = 1.0 / 60.0; 
+    _glContext->fps = 0;
+    _glContext->window = nullptr;
+    _glContext->draw = nullptr;
+    _glContext->onUpdate = nullptr;
 
-    return context;
+    return _glContext;
 }
 
-void hrsglc_init(HRSGLContext *context, HRSWindow *window) {
+void hrsglc_init(HRSGLContext *_glContext, HRSWindow *window) {
 
-    if (context == nullptr)
+    if (_glContext == nullptr)
         errpre_nullptr("HRSGLContext");
 
-    if (context->hasBeenInitialized || hasBeenInitialized != false) {
+    if (_glContext->hasBeenInitialized || hasBeenInitialized != false) {
 
-        HRSError error = {"attempt to reinitialize GLFW and GLAD", "there was an attempt to reset GLFW and GLAD, which may cause errors."
+        HRSError _error = {"attempt to reinitialize GLFW and GLAD", "there was an attempt to reset GLFW and GLAD, which may cause errors."
             " \nAvoid having more than one object of type \"HRSGLContext\"", HRS_ERROR_HRSGLC_ALREADY_INITIALIZED};
-        hrserr_printAndStopProgram(&error);
+        hrserr_printAndStopProgram(&_error);
     }
 
     if (!glfwInit()) {
 
-        HRSError error = {"GLFW can't init", "unable to start GLFW, check your operating system", HRS_ERROR_GLFW_CANT_INIT};
-        hrserr_printAndStopProgram(&error);
+        HRSError _error = {"GLFW can't init", "unable to start GLFW, check your operating system", HRS_ERROR_GLFW_CANT_INIT};
+        hrserr_printAndStopProgram(&_error);
     }
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, context->majorVersion);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, context->minorVersion);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, _glContext->_majorVersion);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, _glContext->minorVersion);
 
-    glfwWindowHint(GLFW_OPENGL_PROFILE, context->profileType);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, _glContext->_profileType);
 
     if (window == nullptr)
         errpre_nullptr("HRSWindow");
 
-    context->window = window;
+    _glContext->window = window;
 
-    hrswin_init(context->window);
+    hrswin_init(_glContext->window);
 
-    glfwSetFramebufferSizeCallback(window->glfwWindow, hrsglc_glfwResizeCallback);
+    glfwSetFramebufferSizeCallback(window->_glfwWindow, hrsglc_glfwResizeCallback);
     
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 
-        HRSError error = {"GLAD can't init", "GLAD can't get the correct address of OpenGL functions", HRS_ERROR_GLAD_CANT_FIND_IMPLEMENTATIONS};
-        hrserr_printAndStopProgram(&error);
+        HRSError _error = {"GLAD can't init", "GLAD can't get the correct address of OpenGL functions", HRS_ERROR_GLAD_CANT_FIND_IMPLEMENTATIONS};
+        hrserr_printAndStopProgram(&_error);
     }
 
-    glfwSwapInterval(context->useVSync);
+    glfwSwapInterval(_glContext->useVSync);
 
     hasBeenInitialized = true;
-    context->hasBeenInitialized = true;
+    _glContext->hasBeenInitialized = true;
 }
 
-void hrsglc_assert(const HRSGLContext *context) {
+void hrsglc_assert(const HRSGLContext *_glContext) {
     
-    if (context == nullptr) 
+    if (_glContext == nullptr) 
         errpre_nullptr("HRSGLContext");
 
-    if (context->hasBeenInitialized != true || hasBeenInitialized != true) {
+    if (_glContext->hasBeenInitialized != true || hasBeenInitialized != true) {
 
-        HRSError error = {"GLFW and GLAD not initialized", "attempt to use an object of type HRSGLContext without initializing GLAD or GLFW", HRS_ERROR_HRSGLC_NOT_INITIALIZED};
-        hrserr_printAndStopProgram(&error);
+        HRSError _error = {"GLFW and GLAD not initialized", "attempt to use an object of type HRSGLContext without initializing GLAD or GLFW", HRS_ERROR_HRSGLC_NOT_INITIALIZED};
+        hrserr_printAndStopProgram(&_error);
     }
 }
 
-void hrsglc_terminate(HRSGLContext *context) {
+void hrsglc_terminate(HRSGLContext *_glContext) {
 
-    hrsglc_assert(context);
+    hrsglc_assert(_glContext);
     
-    hrswin_free(context->window);
+    hrswin_free(_glContext->window);
     
-    free(context);
+    free(_glContext);
 
     glfwTerminate();
 
     hasBeenInitialized = false;
 
-    context = nullptr;
+    _glContext = nullptr;
 }
 
 // Call backs
 
-void hrsglc_registerUpdatePreFixedCallback(HRSGLContext *context, void (*onUpdatePreFixed)(HRSGLContext *context, double deltaTime)) {
+void hrsglc_registerUpdatePreFixedCallback(HRSGLContext *_glContext, void (*onUpdatePreFixed)(HRSGLContext *_glContext, double deltaTime)) {
 
-    hrsglc_assert(context);
+    hrsglc_assert(_glContext);
 
     if (onUpdatePreFixed == nullptr)
-        errpre_nullptr("void (*onUpdatePreFixed)(HRSGLContext *context, double deltaTime)");
+        errpre_nullptr("void (*onUpdatePreFixed)(HRSGLContext *_glContext, double deltaTime)");
 
-    context->onUpdatePreFixed = onUpdatePreFixed;
+    _glContext->onUpdatePreFixed = onUpdatePreFixed;
 }
 
-void hrsglc_registerFixedUpdateCallback(HRSGLContext *context, void (*onFixedUpdate)(HRSGLContext *context, double fixedDeltaTime)) {
+void hrsglc_registerFixedUpdateCallback(HRSGLContext *_glContext, void (*onFixedUpdate)(HRSGLContext *_glContext, double fixedDeltaTime)) {
 
-    hrsglc_assert(context);
+    hrsglc_assert(_glContext);
 
     if (onFixedUpdate == nullptr)
-        errpre_nullptr("void (*onFixedUpdate)(HRSGLContext *context, double fixedDeltaTime)");
+        errpre_nullptr("void (*onFixedUpdate)(HRSGLContext *_glContext, double fixedDeltaTime)");
 
-    context->onFixedUpdate = onFixedUpdate;
+    _glContext->onFixedUpdate = onFixedUpdate;
 }
 
-void hrsglc_registerUpdateCallback(HRSGLContext *context, void (*onUpdate)(HRSGLContext *context, double deltaTime)) {
+void hrsglc_registerUpdateCallback(HRSGLContext *_glContext, void (*onUpdate)(HRSGLContext *_glContext, double deltaTime)) {
 
-    hrsglc_assert(context);
+    hrsglc_assert(_glContext);
 
     if (onUpdate == nullptr)
-        errpre_nullptr("void (*onUpdate)(HRSGLContext *context, double deltaTime)");
+        errpre_nullptr("void (*onUpdate)(HRSGLContext *_glContext, double deltaTime)");
 
-    context->onUpdate = onUpdate;
+    _glContext->onUpdate = onUpdate;
 }
 
-void hrsglc_registerFixedPostUpdateCallback(HRSGLContext *context, void (*onFixedPostUpdate)(HRSGLContext *context, double fixedDeltaTime)) {
+void hrsglc_registerFixedPostUpdateCallback(HRSGLContext *_glContext, void (*onFixedPostUpdate)(HRSGLContext *_glContext, double fixedDeltaTime)) {
 
-    hrsglc_assert(context);
+    hrsglc_assert(_glContext);
 
     if (onFixedPostUpdate == nullptr)
-        errpre_nullptr("void (*onFixedPostUpdate)(HRSGLContext *context, double fixedDeltaTime)");
+        errpre_nullptr("void (*onFixedPostUpdate)(HRSGLContext *_glContext, double fixedDeltaTime)");
 
-    context->onFixedPostUpdate = onFixedPostUpdate;
+    _glContext->onFixedPostUpdate = onFixedPostUpdate;
 }
 
-void hrsglc_registerDrawCallback(HRSGLContext *context, void (*draw)(HRSGLContext *context, HRSDeviceGraphics deviceGraphics)) {
+void hrsglc_registerDrawCallback(HRSGLContext *_glContext, void (*draw)(HRSGLContext *_glContext, HRSDeviceGraphics deviceGraphics)) {
 
-    hrsglc_assert(context);
+    hrsglc_assert(_glContext);
 
     if (draw == nullptr)
-        errpre_nullptr("void (*draw)(HRSGLContext *context, HRSDeviceGraphics deviceGraphics)");
+        errpre_nullptr("void (*draw)(HRSGLContext *_glContext, HRSDeviceGraphics deviceGraphics)");
 
-    context->draw = draw;
+    _glContext->draw = draw;
 }
 
 // Context struct sets
 
-void hrsglc_cycleCooldown(HRSGLContext *context, const double cooldown) {
+void hrsglc_cycleCooldown(HRSGLContext *_glContext, const double cooldown) {
 
-    hrsglc_assert(context);
+    hrsglc_assert(_glContext);
 
-    context->swapCooldown = cooldown;
+    _glContext->swapCooldown = cooldown;
 }
 
-void hrsglc_startLoop(HRSGLContext *context) {
+void hrsglc_startLoop(HRSGLContext *_glContext) {
 
-    hrsglc_assert(context);
+    hrsglc_assert(_glContext);
 
-    hrswin_assert(context->window);
+    hrswin_assert(_glContext->window);
 
     double previousTime = glfwGetTime();
     double previousFixedTime = glfwGetTime();
@@ -227,7 +226,7 @@ void hrsglc_startLoop(HRSGLContext *context) {
 
     HRSDeviceGraphics deviceGraphics = hrsdgr_create();
 
-    while(!glfwWindowShouldClose(context->window->glfwWindow)) {
+    while(!glfwWindowShouldClose(_glContext->window->_glfwWindow)) {
 
         currentTime = glfwGetTime();
         deltaTime = currentTime - previousTime;
@@ -238,26 +237,26 @@ void hrsglc_startLoop(HRSGLContext *context) {
 
         if (fpsTimer >= 1.0) {
 
-            context->fps = frameCount / fpsTimer;
+            _glContext->fps = frameCount / fpsTimer;
             fpsTimer -= 1.0;
             frameCount = 0;
         }
 
-        context->estimatedFPS = 1.0 / deltaTime;
+        _glContext->estimatedFPS = 1.0 / deltaTime;
 
-        if (context->onUpdatePreFixed != nullptr)
-            context->onUpdatePreFixed(context, deltaTime);
+        if (_glContext->onUpdatePreFixed != nullptr)
+            _glContext->onUpdatePreFixed(_glContext, deltaTime);
 
         fixedDeltaTime = glfwGetTime() - previousFixedTime;
 
         fixedDeltaAccumulator += deltaTime;
 
-        while (fixedDeltaAccumulator >= context->swapCooldown) {
+        while (fixedDeltaAccumulator >= _glContext->swapCooldown) {
 
             previousFixedTime = glfwGetTime();
 
-            if (context->onFixedUpdate != nullptr) {
-                context->onFixedUpdate(context, fixedDeltaTime);
+            if (_glContext->onFixedUpdate != nullptr) {
+                _glContext->onFixedUpdate(_glContext, fixedDeltaTime);
             }
 
             fixedDeltaAccumulator -= fixedDeltaTime;
@@ -267,8 +266,8 @@ void hrsglc_startLoop(HRSGLContext *context) {
             postFixedCalls++;
         }
 
-        if (context->onUpdate != nullptr)
-            context->onUpdate(context, deltaTime);
+        if (_glContext->onUpdate != nullptr)
+            _glContext->onUpdate(_glContext, deltaTime);
 
         double fixedPostDeltaTime = glfwGetTime() - previousFixedTime;
 
@@ -278,49 +277,49 @@ void hrsglc_startLoop(HRSGLContext *context) {
 
             postFixedTime = glfwGetTime();
             
-            if (context->onFixedPostUpdate != nullptr)
-                context->onFixedPostUpdate(context, fixedPostDeltaTime);
+            if (_glContext->onFixedPostUpdate != nullptr)
+                _glContext->onFixedPostUpdate(_glContext, fixedPostDeltaTime);
 
             fixedPostDeltaTime = glfwGetTime() - postFixedTime;
 
             postFixedCalls--;
         }
 
-        glClearColor(hrsclr_toFloat(context->window->backgroundColor, HRS_COLOR_RGBA_R),
-            hrsclr_toFloat(context->window->backgroundColor, HRS_COLOR_RGBA_G),
-            hrsclr_toFloat(context->window->backgroundColor, HRS_COLOR_RGBA_B),
+        glClearColor(hrsclr_toFloat(_glContext->window->backgroundColor, HRS_COLOR_RGBA_R),
+            hrsclr_toFloat(_glContext->window->backgroundColor, HRS_COLOR_RGBA_G),
+            hrsclr_toFloat(_glContext->window->backgroundColor, HRS_COLOR_RGBA_B),
             1);
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-        if (context->draw != nullptr)
-            context->draw(context, deviceGraphics);
+        if (_glContext->draw != nullptr)
+            _glContext->draw(_glContext, deviceGraphics);
 
-        glfwSwapBuffers(context->window->glfwWindow);
+        glfwSwapBuffers(_glContext->window->_glfwWindow);
 
         glfwPollEvents();
     }
 }
 
-void hrsglc_closeLoop(HRSGLContext *context) {
+void hrsglc_closeLoop(HRSGLContext *_glContext) {
 
-    hrsglc_assert(context);
+    hrsglc_assert(_glContext);
     
-    hrswin_assert(context->window);
+    hrswin_assert(_glContext->window);
 
-    glfwSetWindowShouldClose(context->window->glfwWindow, GLFW_TRUE);
+    glfwSetWindowShouldClose(_glContext->window->_glfwWindow, GLFW_TRUE);
 
-    if (context->window->onWindowClose != nullptr)
-        context->window->onWindowClose(context->window);
+    if (_glContext->window->onWindowClose != nullptr)
+        _glContext->window->onWindowClose(_glContext->window);
 }
 
 // GLContext sets
 
-void hrsglc_vSync(HRSGLContext *context, const bool newState) {
+void hrsglc_vSync(HRSGLContext *_glContext, const bool newState) {
 
-    hrsglc_assert(context);
+    hrsglc_assert(_glContext);
 
-    context->useVSync = newState;
+    _glContext->useVSync = newState;
     glfwSwapInterval(newState);
 }
 

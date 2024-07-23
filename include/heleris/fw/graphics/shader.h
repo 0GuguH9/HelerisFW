@@ -34,16 +34,16 @@ HRSShader* hrssh_create(const enum EHRSShaderType type, const char *source);
  * Compile a shader and set the source to nullptr.
  * You can delete/free the source if is a heap object.
  */
-void hrssh_compile(HRSShader *shader);
+void hrssh_compile(HRSShader *_shader);
 
 /*
  * Assert the GL shader ins't null.
  */
-void hrssh_assert(const HRSShader *shader);
+void hrssh_assert(const HRSShader *_shader);
 
 /*
  * Free a shader
  */
-void hrssh_free(HRSShader *shader);
+void hrssh_free(HRSShader *_shader);
 
 #endif

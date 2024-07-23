@@ -3,6 +3,17 @@
 
 #include "../types.h"
 
+#ifndef HELERIS_OPEN_GL_INCLUDE_ALREADY
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#define HELERIS_OPEN_GL_INCLUDE_ALREADY
+#endif
+
+enum HRSColorTypes {
+    HRS_COLOR_RGB = GL_RGB,
+    HRS_COLOR_RGBA = GL_RGBA,
+};
+
 enum EHRSColorValue {
     HRS_COLOR_RGBA_R,
     HRS_COLOR_RGBA_G,
@@ -10,7 +21,7 @@ enum EHRSColorValue {
     HRS_COLOR_RGBA_A,
 };
 
-// Represents a RGBA color
+// Represents a RGBA _color
 typedef struct HRSColor {
     byte_t r; // The red of color
     byte_t g; // The green of color
@@ -41,7 +52,7 @@ HRSColor hrsclr_fromFRGBA(const float r, const float g, const float b, const flo
 /*
  * Convert a color value to a float value
  */
-float hrsclr_toFloat(const HRSColor color, const enum EHRSColorValue colorValue);
+float hrsclr_toFloat(const HRSColor _color, const enum EHRSColorValue colorValue);
 
 /*
  * Create a RGBA colo from a hexa (experimental)

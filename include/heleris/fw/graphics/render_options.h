@@ -18,4 +18,14 @@ enum HRSPolygonMode {
     HRS_POLYGON_LINE,
 };
 
+typedef struct HRSRenderOptions {
+    enum HRSFilter _filter;
+    enum HRSTextureRenderOptions _textureRenderOptions;
+    enum HRSPolygonMode _polygonMode;
+} HRSRenderOptions;
+
+HRSRenderOptions hrsrop_create(enum HRSFilter _filter, enum HRSTextureRenderOptions _textureRenderOptions, enum HRSPolygonMode _polygonMode);
+
+void hrsrop_apply(HRSRenderOptions _renderOptions);
+
 #endif

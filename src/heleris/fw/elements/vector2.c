@@ -65,10 +65,10 @@ HRSVector2 hrsvc2_multiply(const HRSVector2 multiplicand, const HRSVector2 multi
     return result;
 }
 
-float hrsvc2_distance(const HRSVector2 vector1, const HRSVector2 vector2) {
+float hrsvc2_distance(const HRSVector2 vector1, const HRSVector2 _vector2) {
 
-    float dx = vector1.x - vector2.x;
-    float dy = vector1.y - vector2.y;
+    float dx = vector1.x - _vector2.x;
+    float dy = vector1.y - _vector2.y;
 
     return sqrt(dx * dx + dy * dy);
 }

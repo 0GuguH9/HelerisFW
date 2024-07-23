@@ -9,41 +9,41 @@
 
 HRSShader* hrssh_create(const enum EHRSShaderType type, const char *source) {
 
-    HRSShader *shader = malloc(sizeof(HRSShader));
+    HRSShader *_shader = malloc(sizeof(HRSShader));
 
-    if (shader == nullptr) {
+    if (_shader == nullptr) {
 
         errpre_malloc("HRSShader");
     }
 
-    shader->glShader = glCreateShader(type);
-    shader->type = type;
-    shader->source = source;
+    _shader->glShader = glCreateShader(type);
+    _shader->type = type;
+    _shader->source = source;
 
-    return shader;
+    return _shader;
 }
 
-void hrssh_compile(HRSShader *shader) {
+void hrssh_compile(HRSShader *_shader) {
 
-    hrssh_assert(shader);
+    hrssh_assert(_shader);
 
-    if (shader->source == nullptr)
+    if (_shader->source == nullptr)
         errpre_nullptr("char *");
 
-    glShaderSource(shader->glShader, 1, &shader->source, (void *)0);
+    glShaderSource(_shader->glShader, 1, &_shader->source, (void *)0);
     
-    glCompileShader(shader->glShader);
+    glCompileShader(_shader->glShader);
 
     int sucess = 0;
-    glGetShaderiv(shader->glShader, GL_COMPILE_STATUS, &sucess);
+    glGetShaderiv(_shader->glShader, GL_COMPILE_STATUS, &sucess);
 
     if (!sucess) {
         char infoLog[512];
-        glGetShaderInfoLog(shader->glShader, 512, NULL, infoLog);
+        glGetShaderInfoLog(_shader->glShader, 512, NULL, infoLog);
 
         char typeName[32];
 
-        switch(shader->type) {
+        switch(_shader->type) {
             case HRS_GL_SHADER_VERTEX:
                 strncpy(typeName, "HRS_GL_SHADER_VERTEX", 21);
             break;
@@ -55,27 +55,27 @@ void hrssh_compile(HRSShader *shader) {
             break;
         }
 
-        HRSError error = {"Shader compile failed", "A OpenGL shader failed to compile. Bellow this error log has a OpenGL error log", HRS_ERROR_SHADER_FAILED_COMPILATION};
+        HRSError error = {"Shader compile failed", "A OpenGL _shader failed to compile. Bellow this error log has a OpenGL error log", HRS_ERROR_SHADER_FAILED_COMPILATION};
         hrserr_print(&error);
         printf("OpenGL error log:\n Type:%32s\n Log:\n%512s\n", typeName, infoLog);
         exit(HRS_ERROR_SHADER_FAILED_COMPILATION);
     }
 
-    shader->source = nullptr;
+    _shader->source = nullptr;
 }
 
-void hrssh_assert(const HRSShader *shader) {
+void hrssh_assert(const HRSShader *_shader) {
 
-    if (shader == nullptr)
+    if (_shader == nullptr)
         errpre_nullptr("HRSShader");
 }
 
-void hrssh_free(HRSShader *shader) {
+void hrssh_free(HRSShader *_shader) {
 
-    hrssh_assert(shader);
+    hrssh_assert(_shader);
 
-    shader->source = nullptr;
+    _shader->source = nullptr;
 
-    free(shader);
-    shader = nullptr;
+    free(_shader);
+    _shader = nullptr;
 }

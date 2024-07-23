@@ -22,16 +22,16 @@ bool hrssz_equals(const HRSSize size1, const HRSSize size2);
 /*
  * Return the area of a size
  */
-int hrssz_area(const HRSSize size); 
+int hrssz_area(const HRSSize _size); 
 
 /*
  * Scale a size (aka uniform multiplication)
  */
-HRSSize hrssz_scale(const HRSSize size, const float scale);
+HRSSize hrssz_scale(const HRSSize _size, const float scale);
 
 /*
  * Convert to a string
  */
-string_t hrssz_toString(const HRSSize size);
+string_t hrssz_toString(const HRSSize _size);
 
 #endif
