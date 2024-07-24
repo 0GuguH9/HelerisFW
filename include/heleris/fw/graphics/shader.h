@@ -26,7 +26,7 @@ typedef struct HRSShader {
 
 
 /*
- * Create a shader with a source
+ * Create a shader with a source.
  */
 HRSShader* hrssh_create(const enum EHRSShaderType type, const char *source);
 
@@ -42,7 +42,7 @@ void hrssh_compile(HRSShader *_shader);
 void hrssh_assert(const HRSShader *_shader);
 
 /*
- * Free a shader
+ * Free a shader.
  */
 void hrssh_free(HRSShader *_shader);
 

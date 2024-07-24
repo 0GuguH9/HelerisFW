@@ -30,4 +30,37 @@ typedef struct HRSVBO {
     glObject_t glVBO;
 } HRSVBO;
 
+// Heap manipulation
+
+/*
+ * Create a VBO (Vertex Buffer Object)
+ */
+HRSVBO* hrsvbo_create();
+
+/*
+ * Assert that the HRSRender object is not a nullptr.
+ */
+void hrsvbo_assert(HRSVBO *_vbo);
+
+/*
+ * Free a VBO
+ */
+void hrsvbo_free(HRSVBO *_vbo);
+
+// VBO related functions
+
+/*
+ * Bind a VBO
+ */
+void hrsvbo_bind(HRSVBO *_vbo);
+
+/*
+ * Unbind a VBO
+ */
+void hrsvbo_unbind();
+
+void hrsvbo_addFloat();
+void hrsvbo_addInt();
+void hrsvbo_addUint();
+
 #endif

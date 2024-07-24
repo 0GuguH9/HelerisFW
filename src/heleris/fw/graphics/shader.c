@@ -76,6 +76,8 @@ void hrssh_free(HRSShader *_shader) {
 
     _shader->source = nullptr;
 
+    glDeleteShader(_shader->glShader);
+
     free(_shader);
     _shader = nullptr;
 }

@@ -6,7 +6,7 @@ This Markdown file outlines the future plans for the Heleris FW framework.
 
 The resource loading system is crucial for handling textures, sounds, models, and other assets efficiently.
 
-- **HRSContextManager**: Manages general resource loading information.
+- **HRSContentLoader**: Manages general resource loading information.
 - **HRSTexture**: Represents a 2D texture.
 - **HRSSound**: Represents a sound.
 
@@ -17,6 +17,6 @@ The graphics system is planned as follows:
 - **HRSRender**: Provides quick initialization of graphics settings, offering flexibility as a utility.
 - **HRSShaderProgram**: Facilitates the rapid creation of shader programs.
 - **HRSShader**: Supports the rapid creation of individual shaders.
-- **HRSDrawBatch**: Implements a content design system that allows customization of vertex and fragment shaders within a standardized framework. It provides a fast method to use graphics in the framework while maintaining some level of flexibility.
+- **HRSRenderBatch**: Implements a content design system that allows a bit of flexibility with a easy-to-use way to draw.
 
 This framework aims to balance speed and flexibility in graphical operations, offering robust tools for application development.

@@ -1,0 +1,6 @@
+#ifndef HRS_GRAPHICS_RENDER_BATCH_H
+#define HRS_GRAPHICS_RENDER_BATCH_H
+
+
+
+#endif

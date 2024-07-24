@@ -30,13 +30,14 @@ All code is designed with internal use in mind. In case of errors, it is standar
 This example creates a window with the color `#8080FF`, 800x600 in size, using the minimum OpenGL version. Here is the simple code:
 
 ```c
-#include "heleris/fw/fw.h" // you can use "heleris/fw/gl_context.h", "heleris/fw/window.h", "heleris/fw/size.h" and "heleris/fw/elements/color.h"
+// The default version is 3.3
+#include "heleris/fw/fw.h" // Ins't recomendable to include separeted headers!
 
 int main() {
 
-    HRSGLContext *context = hrsglc_create(HRS_GL_MAJOR_THREE, 3, HRS_GL_CORE_PROFILE);
+    HRSGLContext *context = hrsglc_create(); // Heleris already stop program if creating ins't possible
 
-    HRSWindow *window = hrswin_create("Simple Window", hrssz_create(800, 600), false);
+    HRSWindow *window = hrswin_create("Simple Window", hrssz_create(800, 600), false); // Heleris already stop program if creating ins't possible
 
     hrsglc_init(context, window);
 

@@ -8,7 +8,16 @@
 
 #include "heleris/fw/math/math.h"
 
+#include <GLFW/glfw3.h>
 #include <stdlib.h>
+
+#ifndef HRS_OPENGL_MAJOR_VERSION
+#define HRS_OPENGL_MAJOR_VERSION 3
+#endif
+
+#ifndef HRS_OPENGL_MINOR_VERSION
+#define HRS_OPENGL_MINOR_VERSION 3
+#endif
 
 // Private fields:
 
@@ -43,7 +52,7 @@ void hrsglc_glfwResizeCallback(GLFWwindow *window, int width, int height) {
 
 // Heap manipulation
 
-HRSGLContext* hrsglc_create(const enum EHRSMajorVersion _majorVersion, const int minorVersion, const enum EHRSProfileType _profileType) {
+HRSGLContext* hrsglc_create() {
 
     if (hasBeenInitialized != false) {
 
@@ -56,12 +65,9 @@ HRSGLContext* hrsglc_create(const enum EHRSMajorVersion _majorVersion, const int
     if (_glContext == nullptr) 
         errpre_malloc("HRSGLContext");
 
-    if (_majorVersion == HRS_GL_MAJOR_THREE && minorVersion < 3)
-        errpre_invalidArgument("int minorVersion (minimum version with HRS_GL_MAJOR_TREE is 3)");
-
-    _glContext->_majorVersion = _majorVersion;
-    _glContext->minorVersion = minorVersion;
-    _glContext->_profileType = _profileType;
+    _glContext->_majorVersion = HRS_OPENGL_MAJOR_VERSION;
+    _glContext->minorVersion = HRS_OPENGL_MINOR_VERSION;
+    _glContext->_profileType = HRS_GL_CORE_PROFILE;
     _glContext->hasBeenInitialized = false;
     _glContext->useVSync = false;
     _glContext->swapCooldown = 1.0 / 60.0; 
@@ -146,14 +152,24 @@ void hrsglc_terminate(HRSGLContext *_glContext) {
 
 // Call backs
 
-void hrsglc_registerUpdatePreFixedCallback(HRSGLContext *_glContext, void (*onUpdatePreFixed)(HRSGLContext *_glContext, double deltaTime)) {
+void hrsglc_registerPreUpdateCallback(HRSGLContext *_glContext, void (*onPreUpdate)(HRSGLContext *_glContext, double deltaTime)) {
 
     hrsglc_assert(_glContext);
 
-    if (onUpdatePreFixed == nullptr)
-        errpre_nullptr("void (*onUpdatePreFixed)(HRSGLContext *_glContext, double deltaTime)");
+    if (onPreUpdate == nullptr)
+        errpre_nullptr("void (*onPreUpdate)(HRSGLContext *_glContext, double deltaTime)");
 
-    _glContext->onUpdatePreFixed = onUpdatePreFixed;
+    _glContext->onPreUpdate = onPreUpdate;
+}
+
+void hrsglc_registerPreFixedUpdateCallback(HRSGLContext *_glContext, void (*onPreFixedUpdate)(HRSGLContext *_glContext, double fixedDeltaTime)) {
+
+    hrsglc_assert(_glContext);
+
+    if (onPreFixedUpdate == nullptr)
+        errpre_nullptr("void (*onPreFixedUpdate)(HRSGLContext *_glContext, double fixedDeltaTime)");
+
+    _glContext->onPreFixedUpdate = onPreFixedUpdate;
 }
 
 void hrsglc_registerFixedUpdateCallback(HRSGLContext *_glContext, void (*onFixedUpdate)(HRSGLContext *_glContext, double fixedDeltaTime)) {
@@ -176,14 +192,24 @@ void hrsglc_registerUpdateCallback(HRSGLContext *_glContext, void (*onUpdate)(HR
     _glContext->onUpdate = onUpdate;
 }
 
-void hrsglc_registerFixedPostUpdateCallback(HRSGLContext *_glContext, void (*onFixedPostUpdate)(HRSGLContext *_glContext, double fixedDeltaTime)) {
+void hrsglc_registerPostFixedUpdateCallback(HRSGLContext *_glContext, void (*onPostFixedUpdate)(HRSGLContext *_glContext, double fixedDeltaTime)) {
 
     hrsglc_assert(_glContext);
 
-    if (onFixedPostUpdate == nullptr)
-        errpre_nullptr("void (*onFixedPostUpdate)(HRSGLContext *_glContext, double fixedDeltaTime)");
+    if (onPostFixedUpdate == nullptr)
+        errpre_nullptr("void (*onPostFixedUpdate)(HRSGLContext *_glContext, double fixedDeltaTime)");
 
-    _glContext->onFixedPostUpdate = onFixedPostUpdate;
+    _glContext->onPostFixedUpdate = onPostFixedUpdate;
+}
+
+void hrsglc_registerPostUpdateCallback(HRSGLContext *_glContext, void (*onPostUpdate)(HRSGLContext *_glContext, double deltaTime)) {
+
+    hrsglc_assert(_glContext);
+
+    if (onPostUpdate == nullptr)
+        errpre_nullptr("void (*onPostUpdate)(HRSGLContext *_glContext, double deltaTime)");
+
+    _glContext->onPostUpdate = onPostUpdate;
 }
 
 void hrsglc_registerDrawCallback(HRSGLContext *_glContext, void (*draw)(HRSGLContext *_glContext, HRSDeviceGraphics deviceGraphics)) {
@@ -211,26 +237,31 @@ void hrsglc_startLoop(HRSGLContext *_glContext) {
 
     hrswin_assert(_glContext->window);
 
-    double previousTime = glfwGetTime();
-    double previousFixedTime = glfwGetTime();
-    double currentTime;
+    double currentTime = glfwGetTime();
+    double previousTime = currentTime;
+    double previousPreUpdateTime = previousTime;
+    double previousUpdateTime = previousTime;
+    double previousPostUpdateTime = previousTime;
+    double previousPreFixedTime = previousTime;
+    double previousFixedTime = previousTime;
+    double previousPostFixedTime = previousTime;
 
-    double deltaTime;
-    double fixedDeltaTime;
+    double deltaTime = 0;
 
     double fixedDeltaAccumulator = 0;
-    int postFixedCalls = 0;
+    int fixedCalls = 0;
 
     double fpsTimer = 0.0;
     int frameCount = 0;
 
     HRSDeviceGraphics deviceGraphics = hrsdgr_create();
 
+
     while(!glfwWindowShouldClose(_glContext->window->_glfwWindow)) {
 
+        // Get basic times and fps updates
         currentTime = glfwGetTime();
         deltaTime = currentTime - previousTime;
-        previousTime = currentTime;
 
         fpsTimer += deltaTime;
         frameCount++;
@@ -244,60 +275,83 @@ void hrsglc_startLoop(HRSGLContext *_glContext) {
 
         _glContext->estimatedFPS = 1.0 / deltaTime;
 
-        if (_glContext->onUpdatePreFixed != nullptr)
-            _glContext->onUpdatePreFixed(_glContext, deltaTime);
+        // Call pre update callback (if ins't nullptr)
+        if (_glContext->onPreUpdate != nullptr)
+            _glContext->onPreUpdate(_glContext, currentTime - previousPreUpdateTime);
 
-        fixedDeltaTime = glfwGetTime() - previousFixedTime;
+        previousPreUpdateTime = glfwGetTime();
+
+        // Pre Fixed and Fixed Updates callbacks
 
         fixedDeltaAccumulator += deltaTime;
 
-        while (fixedDeltaAccumulator >= _glContext->swapCooldown) {
+        if (_glContext->onFixedUpdate != nullptr)
+            while (fixedDeltaAccumulator >= _glContext->swapCooldown) {
 
-            previousFixedTime = glfwGetTime();
 
-            if (_glContext->onFixedUpdate != nullptr) {
-                _glContext->onFixedUpdate(_glContext, fixedDeltaTime);
+
+                // Call pre fixed update callback
+                if(_glContext->onPreFixedUpdate != nullptr)
+                    // previousPreFixedTime - previousTime -> Calc delta time between pre fixed update calls
+                    _glContext->onPreFixedUpdate(_glContext, glfwGetTime() - previousPreFixedTime );
+
+                // Save curent time
+                previousPreFixedTime = glfwGetTime();
+
+                // Calc delta time between fixedUpdate calls
+
+                // Call fixed update callback
+                _glContext->onFixedUpdate(_glContext, glfwGetTime() - previousFixedTime);
+
+                // Save current time
+                previousFixedTime = glfwGetTime();
+
+                // Reduce delta accumulator
+                fixedDeltaAccumulator -= _glContext->swapCooldown;
+            
+                // Add 1 to fixed calls (for post fixed update)
+                fixedCalls++;
             }
 
-            fixedDeltaAccumulator -= fixedDeltaTime;
-
-            fixedDeltaTime = glfwGetTime() - previousFixedTime;
-
-            postFixedCalls++;
-        }
-
         if (_glContext->onUpdate != nullptr)
-            _glContext->onUpdate(_glContext, deltaTime);
+            _glContext->onUpdate(_glContext, glfwGetTime() - previousUpdateTime);
 
-        double fixedPostDeltaTime = glfwGetTime() - previousFixedTime;
-
-        double postFixedTime = previousTime;
-
-        while (postFixedCalls > 0) {
-
-            postFixedTime = glfwGetTime();
+        if (_glContext->onPostFixedUpdate != nullptr) {
+            while (fixedCalls > 0) {
             
-            if (_glContext->onFixedPostUpdate != nullptr)
-                _glContext->onFixedPostUpdate(_glContext, fixedPostDeltaTime);
+                _glContext->onPostFixedUpdate(_glContext, glfwGetTime() - previousPostFixedTime);
 
-            fixedPostDeltaTime = glfwGetTime() - postFixedTime;
+                previousPostFixedTime = glfwGetTime();
 
-            postFixedCalls--;
-        }
+                fixedCalls--;
+            }
+        } else
+            fixedCalls = 0;
 
+        if (_glContext->onPostUpdate != nullptr)
+            _glContext->onPostUpdate(_glContext, glfwGetTime() - previousPostUpdateTime);
+
+        previousPostUpdateTime = glfwGetTime();
+
+        // Background color
         glClearColor(hrsclr_toFloat(_glContext->window->backgroundColor, HRS_COLOR_RGBA_R),
             hrsclr_toFloat(_glContext->window->backgroundColor, HRS_COLOR_RGBA_G),
             hrsclr_toFloat(_glContext->window->backgroundColor, HRS_COLOR_RGBA_B),
             1);
 
+        // Clear background with a color
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
+        // Call Draw callback (if ins't nullptr)
         if (_glContext->draw != nullptr)
             _glContext->draw(_glContext, deviceGraphics);
 
+        // Swap buffers
         glfwSwapBuffers(_glContext->window->_glfwWindow);
 
+        // Pool window events
         glfwPollEvents();
+        previousTime = currentTime;
     }
 }
 
@@ -322,4 +376,3 @@ void hrsglc_vSync(HRSGLContext *_glContext, const bool newState) {
     _glContext->useVSync = newState;
     glfwSwapInterval(newState);
 }
-

@@ -24,9 +24,6 @@ HRSContentLoader* hrscld_create(string_t path) {
 
     loader->path = path;
 
-    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &loader->maxTextureUnits);
-    glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &loader->maxTextureBound);
-
     stbi_set_flip_vertically_on_load(true);
 
     return loader;
@@ -42,22 +39,6 @@ void hrscld_free(HRSContentLoader *loader) {
 
     free(loader);
     loader = nullptr;
-}
-
-// Limits
-
-int hrscld_getTextureUnitLimit(HRSContentLoader *loader) {
-
-    hrscld_assert(loader);
-
-    return loader->maxTextureUnits;
-}
-
-int hrscld_getTextureBoundLimit(HRSContentLoader *loader) {
-
-    hrscld_assert(loader);
-
-    return loader->maxTextureBound;
 }
 
 // Texture loading

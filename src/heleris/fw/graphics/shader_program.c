@@ -60,9 +60,14 @@ void hrsshp_link(HRSShaderProgram *program) {
     }
 }
 
-void hrsshp_active(HRSShaderProgram *program) {
+void hrsshp_bind(HRSShaderProgram *program) {
 
     hrsshp_assert(program);
 
     glUseProgram(program->glShaderProgram);
+}
+
+void hrsshp_unbind() {
+
+    glUseProgram(0);
 }
