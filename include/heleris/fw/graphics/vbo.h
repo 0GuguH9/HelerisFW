@@ -12,7 +12,7 @@
 /*
  * Just for avoiding invalid arguments
  */
-enum HRSDrawType {
+enum EHRSDrawType {
     HRS_GL_STREAM = GL_STREAM_DRAW,
     HRS_GL_STATIC = GL_STATIC_DRAW,
     HRS_GL_DYNAMIC = GL_DYNAMIC_DRAW,
@@ -47,7 +47,7 @@ void hrsvbo_assert(HRSVBO *_vbo);
  */
 void hrsvbo_free(HRSVBO *_vbo);
 
-// VBO related functions
+// VBO binding
 
 /*
  * Bind a VBO
@@ -59,8 +59,11 @@ void hrsvbo_bind(HRSVBO *_vbo);
  */
 void hrsvbo_unbind();
 
-void hrsvbo_addFloat();
-void hrsvbo_addInt();
-void hrsvbo_addUint();
+// Values manipulations (these data apply to tour current binded VBO)
+
+/*
+ * Add values to a vbo
+ */
+void hrsvbo_addFloat(void *values, size_t values_byteSize, enum EHRSDrawType mode);
 
 #endif

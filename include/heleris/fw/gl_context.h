@@ -32,14 +32,14 @@ typedef struct HRSGLContext {
     float estimatedFPS;                                                               // Estimated frames per second based on last deltaTime
     float fps;                                                                        // Frames per second
     double swapCooldown;                                                              // Cycle cooldown of fixed update call back
-    HRSWindow *window;                                                                // Pointer to the current window
+    HRSWindow *_window;                                                                // Pointer to the current window
     void (*onPreUpdate)(struct HRSGLContext *_glContext, double deltaTime);           // Update before all Update callback
     void (*onPreFixedUpdate)(struct HRSGLContext *_glContext, double fixedDeltaTime); // Update pre Fixed Update callback
     void (*onFixedUpdate)(struct HRSGLContext *_glContext, double fixedDeltaTime);    // Fixed Update callback
     void (*onUpdate)(struct HRSGLContext *_glContext, double deltaTime);              // Update callback
     void (*onPostFixedUpdate)(struct HRSGLContext *_glContext, double fixedDeltaTime);// Fixed Update post Update callback
     void (*onPostUpdate)(struct HRSGLContext *_glContext, double deltaTime);          // Update after all Update callback
-    void (*draw)(struct HRSGLContext *_glContext, HRSDeviceGraphics deviceGraphics);  // Draw callback
+    void (*draw)(struct HRSGLContext *_glContext, HRSDeviceGraphics *_deviceGraphics);  // Draw callback
 } HRSGLContext;
 
 // Heap manipulation
@@ -54,7 +54,7 @@ HRSGLContext* hrsglc_create();
  * Init all OpenGL context for the application. 
  * You can't have more than one HRSGLContext actived in the same time.
  */
-void hrsglc_init(HRSGLContext *_glContext, HRSWindow *window);
+void hrsglc_init(HRSGLContext *_glContext, HRSWindow *_window);
 
 /*
  * Assert that the HRSGLContext object is not nullptr and has been initialized.
@@ -101,7 +101,7 @@ void hrsglc_registerPostUpdateCallback(HRSGLContext *_glContext, void (*onPostUp
 /*
  * Register the draw callback.
  */
-void hrsglc_registerDrawCallback(HRSGLContext *_glContext, void (*draw)(HRSGLContext *_glContext, HRSDeviceGraphics deviceGraphics));
+void hrsglc_registerDrawCallback(HRSGLContext *_glContext, void (*draw)(HRSGLContext *_glContext, HRSDeviceGraphics *_deviceGraphics));
 
 // Context struct sets
 
