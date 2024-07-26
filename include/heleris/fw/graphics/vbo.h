@@ -12,7 +12,7 @@
 /*
  * Just for avoiding invalid arguments
  */
-enum HRSDrawType {
+enum EHRSDrawType {
     HRS_GL_STREAM = GL_STREAM_DRAW,
     HRS_GL_STATIC = GL_STATIC_DRAW,
     HRS_GL_DYNAMIC = GL_DYNAMIC_DRAW,
@@ -29,5 +29,41 @@ enum HRSDrawType {
 typedef struct HRSVBO {
     glObject_t glVBO;
 } HRSVBO;
+
+// Heap manipulation
+
+/*
+ * Create a VBO (Vertex Buffer Object)
+ */
+HRSVBO* hrsvbo_create();
+
+/*
+ * Assert that the HRSRender object is not a nullptr.
+ */
+void hrsvbo_assert(HRSVBO *_vbo);
+
+/*
+ * Free a VBO
+ */
+void hrsvbo_free(HRSVBO *_vbo);
+
+// VBO binding
+
+/*
+ * Bind a VBO
+ */
+void hrsvbo_bind(HRSVBO *_vbo);
+
+/*
+ * Unbind a VBO
+ */
+void hrsvbo_unbind();
+
+// Values manipulations (these data apply to tour current binded VBO)
+
+/*
+ * Add values to a vbo
+ */
+void hrsvbo_add(void *values, size_t values_byteSize, enum EHRSDrawType mode);
 
 #endif

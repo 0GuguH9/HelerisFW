@@ -14,35 +14,40 @@ typedef struct HRSShaderProgram {
 // Heap manipulation
 
 /*
- * Create a shader program
+ * Create a shader program.
  */
 HRSShaderProgram* hrsshp_create();
 
 /*
- * Assert that the HRSShaderProgram object is not a nullptr
+ * Assert that the HRSShaderProgram object is not a nullptr.
  */
 void hrsshp_assert(HRSShaderProgram *program);
 
 /*
- * Free a HRSShaderProgram
+ * Free a HRSShaderProgram.
  */
 void hrsshp_free(HRSShaderProgram *program);
 
 // GL functions
 
 /*
- * Attach a shader to a shader program
+ * Attach a shader to a shader program.
  */
 void hrsshp_attach(HRSShaderProgram *program, HRSShader *shader);
 
 /*
- * Link the shader program
+ * Link the shader program.
  */
 void hrsshp_link(HRSShaderProgram *program);
 
 /*
- * Active the current shader program for use
+ * Bind the current shader program for use.
  */
-void hrsshp_active(HRSShaderProgram *program);
+void hrsshp_bind(HRSShaderProgram *program);
+
+/*
+ * Unbind the current shader program.
+ */
+void hrsshp_unbind();
 
 #endif

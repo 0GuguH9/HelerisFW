@@ -15,6 +15,17 @@ enum EHRSShaderType {
     HRS_GL_SHADER_GEOMETRY = GL_GEOMETRY_SHADER,
 };
 
+enum EHRSGLSLType {
+    HRS_GL_GLSL_UBYTE = GL_UNSIGNED_BYTE,
+    HRS_GL_GLSL_SHORT = GL_SHORT,
+    HRS_GL_GLSL_USHORT = GL_UNSIGNED_SHORT,
+    HRS_GL_GLSL_INT = GL_INT,
+    HRS_GL_GLSL_UINT = GL_UNSIGNED_INT,
+    HRS_GL_GLSL_HALF = GL_HALF_FLOAT,
+    HRS_GL_GLSL_FLOAT = GL_FLOAT,
+    HRS_GL_GLSL_DOUBLE = GL_DOUBLE,
+};
+
 /*
  * Represents an OpenGL shader object.
  */
@@ -26,7 +37,7 @@ typedef struct HRSShader {
 
 
 /*
- * Create a shader with a source
+ * Create a shader with a source.
  */
 HRSShader* hrssh_create(const enum EHRSShaderType type, const char *source);
 
@@ -42,8 +53,12 @@ void hrssh_compile(HRSShader *_shader);
 void hrssh_assert(const HRSShader *_shader);
 
 /*
- * Free a shader
+ * Free a shader.
  */
 void hrssh_free(HRSShader *_shader);
+
+// Vertex Shader ONLY
+
+void hrssh_vertex_add(int location, size_t value_s, enum EHRSGLSLType type, bool normalize, size_t stride, size_t offset);
 
 #endif

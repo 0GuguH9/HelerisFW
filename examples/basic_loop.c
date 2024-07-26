@@ -1,3 +1,7 @@
+// Defining the OpenGL version of this exemple
+#define HRS_OPENGL_MAJOR_VERSION 3
+#define HRS_OPENGL_MINOR_VERSION 3
+
 #include "heleris/fw/gl_context.h"
 
 // Protyping functions
@@ -6,12 +10,12 @@ void onUpdate(HRSGLContext *context, double deltaTime);
 
 void onFixedUpdate(HRSGLContext *context, double fixedDeltaTime);
 
-void onDraw(HRSGLContext *context, HRSDeviceGraphics deviceGraphics);
+void onDraw(HRSGLContext *context, HRSDeviceGraphics *deviceGraphics);
 
 int main() {
 
     // Creating a HRSGLContext, which is a struct to store and manage GL Context features, like program loop, gl functions loader, window maker and etc.
-    HRSGLContext *context = hrsglc_create(HRS_GL_MAJOR_THREE, 3, HRS_GL_CORE_PROFILE);
+    HRSGLContext *context = hrsglc_create();
 
     // Creating the window...
     HRSWindow *window = hrswin_create("Simple Window", hrssz_create(800, 600), false);
@@ -26,7 +30,7 @@ int main() {
      * RRGGBBAA
      * #RRGGBBAA
      */
-    hrswin_changeBackgroundColor(context->window, hrsclr_fromHexa("#8080FF"));
+    hrswin_changeBackgroundColor(context->_window, hrsclr_fromHexa("#8080FF"));
     
     // Register an update function
     hrsglc_registerUpdateCallback(context, onUpdate);
@@ -71,7 +75,7 @@ void onFixedUpdate(HRSGLContext *context, double fixedDeltaTime) {
     printf("Fixed update call! With delta time: %f", fixedDeltaTime);
 }
 
-void onDraw(HRSGLContext *context, HRSDeviceGraphics deviceGraphics) {
+void onDraw(HRSGLContext *context, HRSDeviceGraphics *deviceGraphics) {
 
     printf("Draw call!");
 }

@@ -1,6 +1,24 @@
 #ifndef HELERIS_FRAMEWORK_GLOBAL_INCLUDE_H
 #define HELERIS_FRAMEWORK_GLOBAL_INCLUDE_H
 
+#ifndef HRS_OPENGL_MAJOR_VERSION
+#define HRS_OPENGL_MAJOR_VERSION 3
+#endif
+
+#ifndef HRS_OPENGL_MINOR_VERSION
+#define HRS_OPENGL_MINOR_VERSION 3
+#endif
+
+#if HRS_OPENGL_MAJOR_VERSION < 3
+#error "Your HRS_OPENLG_MAJOR_VERSION need to be 3 or higher"
+#endif
+
+#if HRS_OPENGL_MAJOR_VERSION == 3 && HRS_OPENGL_MINOR_VERSION < 3
+#error "Your HRS_OPENGL_MINOR_VERSION need to be 3 or higher with HRS_OPENGL_MAJOR_VERSION == 3"
+#endif
+
+// Debug define is: HRS_DEBUG
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -38,5 +56,13 @@
 // Low order main files
 #include "window.h"
 #include "gl_context.h"
+
+// Presets
+
+// RenderBatch
+
+#ifdef HRS_INCLUDE_RENDER_GRAPHICS
+#include "graphics/render_batch/render_batch.h"
+#endif
 
 #endif

@@ -14,7 +14,7 @@
  */
 typedef struct HRSRender {
     HRSShaderProgram *_shaderProgram;
-    HRSRenderOptions _renderOptions;
+    enum EHRSPolygonMode _polygonMode;
     HRSVAO *_vao;
     HRSVBO *_vbo;
 } HRSRender;
@@ -24,7 +24,7 @@ typedef struct HRSRender {
 /*
  * Create a render object.
  */
-HRSRender* hrsr_create(HRSShaderProgram *_shaderProgram, HRSRenderOptions _renderOptions, HRSVAO *_vao, HRSVBO *_vbo);
+HRSRender* hrsr_create(HRSShaderProgram *_shaderProgram, enum EHRSPolygonMode _polygonMode, HRSVAO *_vao);
 
 /*
  * Assert that the HRSRender object is not a nullptr
@@ -32,17 +32,30 @@ HRSRender* hrsr_create(HRSShaderProgram *_shaderProgram, HRSRenderOptions _rende
 void hrsr_assert(HRSRender *_render);
 
 /*
- * Start rendering.
- * Apply these settings:
- *  - Use shaders.
- *  - Apply render options.
- * Only use if you want to use this style (i.e. making your only presets) and not the drawbatch style
- */
-void hrsr_startRender(HRSRender *_render);
-
-/*
  * Free a render.
  */
 void hrsr_free(HRSRender *_render);
+
+// Rendering
+
+/*
+ * Start rendering.
+ * Apply these settings:
+ *  - Use Shader Program.
+ *  - Apply polygon mode.
+ *  - Bind VAO and VBO
+ * Only use if you want to use this style (i.e. making your only presets) and not the render batch style
+ */
+void hrsr_start(HRSRender *_render);
+
+/*
+ * End rendering
+ * Unbind these objects:
+ *  - Shader Program
+ *  - VBO
+ *  - VAO
+ * Only use if you want to use this style (i.e. making your only presets) and not the render batch style
+ */
+void hrsr_end();
 
 #endif
