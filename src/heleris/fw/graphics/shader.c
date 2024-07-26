@@ -81,3 +81,10 @@ void hrssh_free(HRSShader *_shader) {
     free(_shader);
     _shader = nullptr;
 }
+
+// Vertex Shader ONLY
+
+void hrssh_vertex_add(int location, size_t value_s, enum EHRSGLSLType type, bool normalize, size_t stride, size_t offset) {
+    glVertexAttribPointer(location, value_s, type, normalize, stride, (void*)offset);
+    glEnableVertexAttribArray(location);
+}

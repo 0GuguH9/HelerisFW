@@ -64,6 +64,6 @@ void hrsvbo_unbind();
 /*
  * Add values to a vbo
  */
-void hrsvbo_addFloat(void *values, size_t values_byteSize, enum EHRSDrawType mode);
+void hrsvbo_add(void *values, size_t values_byteSize, enum EHRSDrawType mode);
 
 #endif

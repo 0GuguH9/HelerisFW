@@ -1,9 +1,13 @@
-#include "heleris/fw/fw.h" // you can use "heleris/fw/gl_context.h", "heleris/fw/window.h", "heleris/fw/size.h" and "heleris/fw/elements/color.h"
+// Defining the OpenGL version of this exemple
+#define HRS_OPENGL_MAJOR_VERSION 3
+#define HRS_OPENGL_MINOR_VERSION 3
+
+#include "heleris/fw/fw.h"
 
 int main() {
 
     // Creating a HRSGLContext, which is a struct to store and manage GL Context features, like program loop, gl functions loader, window maker and etc.
-    HRSGLContext *context = hrsglc_create(HRS_GL_MAJOR_THREE, 3, HRS_GL_CORE_PROFILE);
+    HRSGLContext *context = hrsglc_create();
 
     // Creating the window...
     HRSWindow *window = hrswin_create("Simple Window", hrssz_create(800, 600), false);
@@ -18,7 +22,7 @@ int main() {
      * RRGGBBAA
      * #RRGGBBAA
      */
-    hrswin_changeBackgroundColor(context->window, hrsclr_fromHexa("#8080FF"));
+    hrswin_changeBackgroundColor(context->_window, hrsclr_fromHexa("#8080FF"));
     
     // Start program loop
     hrsglc_startLoop(context);
